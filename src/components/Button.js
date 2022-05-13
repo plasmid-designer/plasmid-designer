@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
-const Button = ({ className, onClick, children }) => {
+const Button = ({ className, children, ...props }) => {
     return (
-        <div className={className}>
+        <div className={className} {...props}>
             {children}
         </div>
     )

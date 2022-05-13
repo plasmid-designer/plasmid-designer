@@ -6,7 +6,19 @@ on: [pull_request]
 #       - release
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: yarn
+    - name: Lint
+      run: yarn lint
   release:
+    needs: lint
     strategy:
       fail-fast: false
       matrix:
@@ -33,7 +45,7 @@ jobs:
       run: yarn && yarn build
     - uses: tauri-apps/tauri-action@v0
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
         tagName: plasmid-designer-v__VERSION__
         releaseName: "Plasmid Designer v__VERSION__"

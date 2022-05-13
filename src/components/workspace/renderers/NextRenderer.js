@@ -5,11 +5,11 @@ import styled from 'styled-components'
 import { editorHintState } from '../../../state/atoms'
 import ColorUtil from '../../../util/ColorUtil'
 
-const _Cursor = memo(({ className, offset }) => {
+const _Cursor = ({ className }) => {
     return (
         <div className={className} />
     )
-})
+}
 
 const Cursor = styled(_Cursor)`
     position: absolute;
@@ -65,7 +65,7 @@ const Nucleotide = memo(
  * index: number,
  * }} props
  */
-const _Peptide = ({ className, letter, index, color }) => {
+const _Peptide = ({ className, letter, index }) => {
     return (
         <div className={className} data-index={index}>
             <span>{letter}</span>
@@ -293,7 +293,6 @@ const NextRenderer = ({
     sequence,
     cursor,
     selection,
-    showCursor,
 }) => {
     return (
         <div className={className}>

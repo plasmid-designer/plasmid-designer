@@ -1,3 +1,5 @@
+/* eslint react/no-unescaped-entities: "off" */
+
 import { useRecoilValue } from 'recoil'
 import { compact } from 'lodash'
 import styled from 'styled-components'
@@ -104,6 +106,7 @@ const LegacyRenderer = ({
             {/* <SequenceItem isStart /> */}
             {sequence.items.map(item => (
                 <SequenceItem
+                    key={item.startIndex}
                     item={item}
                     selection={selection}
                     cursorIndex={cursor.cursorPosition}
