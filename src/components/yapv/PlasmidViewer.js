@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
+import { useRecoilValue } from 'recoil'
 import styled from 'styled-components'
 import YAPV from '@yapv/core'
 import SVG from '@yapv/svg'
-import { useRecoilValue } from 'recoil'
 
 import { sequenceState } from '../../state/atoms'
 import { useElementSize } from '../../hooks/useElementSize'
@@ -20,7 +20,6 @@ const getNucleotideColor = nucleotide => {
 const PlasmidViewer = ({ className, name = "Foo" }) => {
     const ref = useRef(null)
     const sequence = useRecoilValue(sequenceState)
-    const [renderer, setRenderer] = useState(null)
     const [parentRef, size] = useElementSize()
 
     const markers = useMemo(() => {
@@ -61,8 +60,8 @@ const PlasmidViewer = ({ className, name = "Foo" }) => {
                 width: size.width,
                 height: size.width,
                 // viewBox: {
-                //     width: size.width,
-                //     height: size.width,
+                //     width: 256,
+                //     height: 256,
                 // },
             },
             labels: [
@@ -112,21 +111,7 @@ const PlasmidViewer = ({ className, name = "Foo" }) => {
                 },
             ],
         }
-    }, [sequence, markers, size?.width])
-
-    useEffect(() => {
-        if (ref.current === null) return
-        const renderer = YAPV.create(ref.current)
-        renderer.use(SVG.circular)
-        setRenderer(renderer)
-    }, [])
-
-    const rerender = () => {
-        if (sequence.length === 0) {
-            return
-        }
-        renderer?.draw(sequenceConfig)
-    }
+    }, [name, sequence, markers, size?.width])
 
     useEffect(() => {
         if (
@@ -134,20 +119,13 @@ const PlasmidViewer = ({ className, name = "Foo" }) => {
             || size.width === 0
             || size.height === 0
         ) return
-        rerender()
-    }, [size, sequence, renderer])
 
-    useEffect(() => {
-        if (
-            ref.current === null
-            || size.width === 0
-            || size.height === 0
-        ) return
-        ref.current.replaceChildren()
-        const renderer = YAPV.create(ref.current)
+        const el = document.createElement('div')
+        const renderer = YAPV.create(el)
         renderer.use(SVG.circular)
-        setRenderer(renderer)
-    }, [size])
+        renderer.draw(sequenceConfig)
+        ref.current.replaceChildren(el)
+    }, [size, sequence, sequenceConfig])
 
     return (
         <div ref={parentRef} className={className}>
@@ -179,7 +157,7 @@ export default styled(PlasmidViewer)`
         width: 100%;
         height: 100%;
 
-        & > svg {
+        & svg {
             width: 100%;
             height: auto;
         }
