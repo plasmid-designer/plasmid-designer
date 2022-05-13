@@ -1,21 +1,24 @@
-import { useCallback, useState, useLayoutEffect, useEffect } from 'react'
+import { useState, useLayoutEffect, useMemo } from 'react'
 
-export const useElementSize = node => {
+export const useElementSize = () => {
     const [ref, setRef] = useState(null)
     const [size, setSize] = useState({width: 0, height: 0})
 
-    const handleResize = useCallback(() => {
-        setSize({width: ref?.offsetWidth ?? 0, height: ref?.offsetHeight ?? 0})
-    }, [ref?.offsetWidth, ref?.offsetHeight])
+    const handleObservedResize = useMemo(() => entries => {
+        console.log('resize')
+        const entry = entries[0]
+        const { width, height } = entry.contentRect
+        setSize({ width, height })
+    }, [])
 
-    useEffect(() => {
-        window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize)
-    }, [handleResize])
+    const resizeObserver = useMemo(() => new ResizeObserver(entries => handleObservedResize(entries)), [handleObservedResize])
 
     useLayoutEffect(() => {
-        handleResize()
-    }, [handleResize, ref?.offsetWidth, ref?.offsetHeight])
+        if (!ref) return
+        const current = ref
+        resizeObserver.observe(current)
+        return () => resizeObserver.unobserve(current)
+    }, [ref, resizeObserver])
 
     return [setRef, size]
 }
