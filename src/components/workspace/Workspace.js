@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { Allotment, setSashSize } from 'allotment'
 
-import ResizableSplitPanel from '../ResizableSplitPanel'
 import PlasmidViewer from '../yapv/PlasmidViewer'
 
 import Editor from './Editor'
