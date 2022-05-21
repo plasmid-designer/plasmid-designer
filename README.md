@@ -1,7 +1,8 @@
 # Plasmid Designer
-> [![badge_release]][link_latest_release] ![badge_platforms] ![badge_lint]
+[![badge_release]][link_latest_release] ![badge_platforms] ![badge_lint]
 
-__Plasmid Designer is a work-in-progress.__<br>
+__Plasmid Designer is a work-in-progress.__
+
 Many features aren't implemented yet and there might still be issues with some basic features, although the editor itself should work fairly well at this point.
 
 Feel free to give it a try and open an issue if you encounter bugs or want to request a feature!
