@@ -1,9 +1,8 @@
 name: Release Plasmid Designer
-on: [pull_request]
-# on:
-#   push:
-#     branches:
-#       - release
+on:
+  push:
+    branches:
+      - release
 
 jobs:
   lint:
