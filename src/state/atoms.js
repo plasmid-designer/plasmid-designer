@@ -24,3 +24,10 @@ export const projectsState = atom({
     key: 'projectsState',
     default: []
 })
+
+export const modalState = atom({
+    key: 'modalState',
+    default: {
+        newProjectModal: false,
+    }
+})

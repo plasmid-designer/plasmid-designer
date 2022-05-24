@@ -34,6 +34,7 @@ export default styled(MenuButton)`
     font-weight: 500;
     border-left: 1px solid hsl(0,0%,90%);
     height: 100%;
+    user-select: none;
 
     & .title {
         cursor: pointer;

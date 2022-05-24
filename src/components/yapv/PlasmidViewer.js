@@ -143,6 +143,7 @@ export default styled(PlasmidViewer)`
     align-items: center;
     width: 100%;
     height: 100%;
+    user-select: none;
 
     & .inner {
         width: 100%;

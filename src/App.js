@@ -1,18 +1,24 @@
-import styled from 'styled-components'
+import { useLayoutEffect } from 'react'
 import { RecoilRoot } from 'recoil'
+import styled from 'styled-components'
+import Modal from 'react-modal'
 
 import Header from './components/header/Header'
 import Workspace from './components/workspace/Workspace'
 
 const App = ({ className }) => {
-  return (
-    <RecoilRoot>
-        <div className={className}>
-            <Header />
-            <Workspace />
-        </div>
-    </RecoilRoot>
-  );
+    useLayoutEffect(() => {
+        Modal.setAppElement('#root')
+    }, [])
+
+    return (
+        <RecoilRoot>
+            <div className={className}>
+                <Header />
+                <Workspace />
+            </div>
+        </RecoilRoot>
+    );
 }
 
 export default styled(App)`
