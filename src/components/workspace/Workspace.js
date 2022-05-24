@@ -4,7 +4,7 @@ import { Allotment, setSashSize } from 'allotment'
 import PlasmidViewer from '../yapv/PlasmidViewer'
 
 import Editor from './editor/Editor'
-import Sidebar from './Sidebar'
+import Sidebar from './sidebar/Sidebar'
 
 setSashSize(20)
 

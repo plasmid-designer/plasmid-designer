@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import Toolbar from './Toolbar'
+import Toolbar from '../Toolbar'
 // import { useRecoilState, useRecoilValue } from 'recoil'
 
 const Sidebar = ({ className }) => {
