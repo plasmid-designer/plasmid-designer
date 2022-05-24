@@ -19,3 +19,8 @@ export const editorRendererState = atom({
     key: 'editorRendererState',
     default: 'next'
 })
+
+export const projectsState = atom({
+    key: 'projectsState',
+    default: []
+})

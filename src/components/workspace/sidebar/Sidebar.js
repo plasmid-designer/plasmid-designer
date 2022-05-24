@@ -1,12 +1,30 @@
 import styled from 'styled-components'
+import { FolderPlus } from 'react-feather'
+import { useRecoilValue } from 'recoil'
+
 import Toolbar from '../Toolbar'
-// import { useRecoilState, useRecoilValue } from 'recoil'
+import { projectsState } from '../../../state/atoms'
 
 const Sidebar = ({ className }) => {
+    const projects = useRecoilValue(projectsState)
+
+    const createNewFile = () => {
+    }
+
     return (
         <div className={className}>
-            <Toolbar>
+            <Toolbar className="header">
+                <div className="icon" onClick={createNewFile}>
+                    <FolderPlus size={18} />
+                </div>
             </Toolbar>
+            <div className="project-list">
+                {projects.map(project => (
+                    <div className="project" key={project.id}>
+                        {project?.name}
+                    </div>
+                ))}
+            </div>
         </div>
     )
 }
@@ -17,11 +35,29 @@ export default styled(Sidebar)`
     width: 100%;
 
     & .header {
+        padding: 0 calc(2.5rem / 4);
         display: flex;
-        height: 2.5rem;
         align-items: center;
-        background: hsl(0,0%,98%);
-        border-bottom: 1px solid hsl(0,0%,50%);
-        font-size: 10pt;
+        justify-content: flex-end;
+        gap: .5rem;
+
+        & .icon {
+            display: flex;
+            align-items: center;
+            padding: 0 .5rem;
+            margin: 0 -.5rem;
+            height: 100%;
+            cursor: pointer;
+
+            &:hover {
+                color: hsl(0,0%,35%);
+            }
+        }
+    }
+
+    & .project-list {
+        display: flex;
+        flex-flow: column;
+        width: 100%;
     }
 `
