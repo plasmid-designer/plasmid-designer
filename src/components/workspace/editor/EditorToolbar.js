@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { useRecoilState } from 'recoil'
 
-import { editorHintState, editorRendererState } from '../../state/atoms'
+import { editorHintState, editorRendererState } from '../../../state/atoms'
 
-import MenuButton from '../MenuButton'
-import Toolbar from './Toolbar'
+import MenuButton from '../../MenuButton'
+import Toolbar from '../Toolbar'
 
 const EditorToolbar = ({ className }) => {
     const [editorHints, setEditorHints] = useRecoilState(editorHintState)

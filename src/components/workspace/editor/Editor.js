@@ -2,13 +2,13 @@ import { useMemo, useRef, useEffect, useCallback, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import styled from 'styled-components'
 
-import useEditor from './useEditor'
+import useEditor from '../useEditor'
 import EditorToolbar from './EditorToolbar'
 
-import { editorRendererState } from '../../state/atoms'
+import { editorRendererState } from '../../../state/atoms'
 
-import LegacyRenderer from './renderers/LegacyRenderer'
-import NextRenderer from './renderers/NextRenderer'
+import LegacyRenderer from '../renderers/LegacyRenderer'
+import NextRenderer from '../renderers/NextRenderer'
 
 const Editor = ({ className }) => {
     const editorRef = useRef()
