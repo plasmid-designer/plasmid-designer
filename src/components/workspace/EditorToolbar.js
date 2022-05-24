@@ -2,14 +2,16 @@ import styled from 'styled-components'
 import { useRecoilState } from 'recoil'
 
 import { editorHintState, editorRendererState } from '../../state/atoms'
+
 import MenuButton from '../MenuButton'
+import Toolbar from './Toolbar'
 
 const EditorToolbar = ({ className }) => {
     const [editorHints, setEditorHints] = useRecoilState(editorHintState)
     const [renderer, setRenderer] = useRecoilState(editorRendererState)
 
     return (
-        <div className={className}>
+        <Toolbar className={className}>
             <div className="input_container">
                 <MenuButton title="View">
                     <div className="input_wrapper">
@@ -59,18 +61,11 @@ const EditorToolbar = ({ className }) => {
                     </select>
                 </div>
             </div>
-        </div>
+        </Toolbar>
     )
 }
 
 export default styled(EditorToolbar)`
-    display: flex;
-    height: 2.5rem;
-    align-items: center;
-    background: hsl(0,0%,98%);
-    border-bottom: 1px solid hsl(0,0%,50%);
-    font-size: 10pt;
-
     & .input_container {
         display: flex;
         align-items: center;
