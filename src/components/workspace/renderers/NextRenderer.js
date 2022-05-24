@@ -304,15 +304,28 @@ const NextRenderer = ({
                     selection={selection}
                 />
             ))}
+            {(sequence.bpCount === 0 || cursor.isCursorAtEnd()) && (
+                <div className="cursor-wrapper">
+                    <Cursor />
+                </div>
+            )}
         </div>
     )
 }
 
 export default styled(NextRenderer)`
     display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
     flex-flow: row wrap;
     font-family: monospace;
     font-size: 14pt;
     cursor: text;
     width: 100%;
+
+    & .cursor-wrapper {
+        margin-top: 0.45rem;
+        position: relative;
+        height: 1rem;
+    }
 `
