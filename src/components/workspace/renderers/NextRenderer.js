@@ -309,6 +309,7 @@ const NextRenderer = ({
                     <Cursor />
                 </div>
             )}
+            <div className="filler" data-index={sequence.bpCount}>&nbsp;</div>
         </div>
     )
 }
@@ -327,5 +328,10 @@ export default styled(NextRenderer)`
         margin-top: 0.45rem;
         position: relative;
         height: 1rem;
+    }
+
+    & .filler {
+        flex-grow: 1;
+        background: transparent;
     }
 `
