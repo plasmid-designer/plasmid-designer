@@ -1779,10 +1779,10 @@
     "@svgr/plugin-svgo" "^5.5.0"
     loader-utils "^2.0.0"
 
-"@tauri-apps/api@^1.0.0-rc.4":
-  version "1.0.0-rc.4"
-  resolved "https://registry.yarnpkg.com/@tauri-apps/api/-/api-1.0.0-rc.4.tgz#454ef7b15237f3d5752bbfc09c8997a00b1e8a9b"
-  integrity sha512-1HaUsx8+TzFHDoQ+Mmd6RWaMsPyZlurQHgACDt+il5e/ui6pDkumVXaS92SnY5XOcS4gBC0BkgjVfkWgcm/Oww==
+"@tauri-apps/api@^1.0.0-rc.6":
+  version "1.0.0-rc.6"
+  resolved "https://registry.yarnpkg.com/@tauri-apps/api/-/api-1.0.0-rc.6.tgz#6c3358bc8c2cba705d52c1194e2d340cedf1697a"
+  integrity sha512-/PbVs3/dUzid0/1XbML8tAkRSOmp+6Gv9ql02HGt3aIjNTvaL2902qEbiTX6xK++3oUoKJJ88t+V6IiNd1JUkw==
   dependencies:
     type-fest "2.12.2"
 
