@@ -1,27 +1,31 @@
-import { FolderPlus } from 'react-feather'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { FilePlus } from 'react-feather'
+import { useState } from 'react'
+import { useRecoilValue } from 'recoil'
 import styled from 'styled-components'
 
-import { NewProjectModalIsOpenSelector } from '../../../state/selectors'
 import { projectsState } from '../../../state/atoms'
-import Toolbar from '../Toolbar'
 import NewProjectModal from '../../modals/NewProjectModal'
+import Toolbar from '../Toolbar'
 
 const Sidebar = ({ className }) => {
     const projects = useRecoilValue(projectsState)
 
-    const setNewProjectModalIsOpen = useSetRecoilState(NewProjectModalIsOpenSelector)
+    const [showNewProjectModal, setShowNewProjectModal] = useState(false)
 
     const openNewProjectModal = () => {
-        setNewProjectModalIsOpen(true)
+        setShowNewProjectModal(true)
+    }
+
+    const closeNewProjectModal = () => {
+        setShowNewProjectModal(false)
     }
 
     return (
         <div className={className}>
-            <NewProjectModal />
+            <NewProjectModal isOpen={showNewProjectModal} onClose={closeNewProjectModal} />
             <Toolbar className="header">
                 <div className="icon" onClick={openNewProjectModal}>
-                    <FolderPlus size={18} />
+                    <FilePlus size={18} />
                 </div>
             </Toolbar>
             <div className="project-list">

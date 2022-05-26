@@ -1,17 +1,14 @@
 import styled from 'styled-components'
 import { useState } from 'react'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 import { v4 as uuid } from 'uuid'
-
-import { NewProjectModalIsOpenSelector } from '../../state/selectors'
 
 import Modal from './Modal'
 import ModalButton from './ModalButton'
 import { projectsState } from '../../state/atoms'
 
-const NewProjectModal = ({ className }) => {
+const NewProjectModal = ({ className, isOpen, onClose }) => {
     const setProjects = useSetRecoilState(projectsState)
-    const [isOpen, setIsOpen] = useRecoilState(NewProjectModalIsOpenSelector)
 
     const [id, setId] = useState(uuid())
     const [name, setName] = useState('')
@@ -22,8 +19,8 @@ const NewProjectModal = ({ className }) => {
     }
 
     const handleClose = () => {
-        setIsOpen(false)
         reset()
+        onClose()
     }
 
     const handleCreateProject = () => {

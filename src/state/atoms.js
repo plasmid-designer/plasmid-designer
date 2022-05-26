@@ -1,4 +1,5 @@
 import { atom } from 'recoil'
+import { persistLocalEffect } from './persist'
 
 export const sequenceState = atom({
     key: 'sequenceState',
@@ -12,22 +13,18 @@ export const editorHintState = atom({
         showCodonNumbers: true,
         showPeptides: true,
         highlightCurrentCodon: true,
-    }
+    },
+    effects: [persistLocalEffect('editorHints')],
 })
 
 export const editorRendererState = atom({
     key: 'editorRendererState',
-    default: 'next'
+    default: 'next',
+    effects: [persistLocalEffect('preferredRenderer')],
 })
 
 export const projectsState = atom({
     key: 'projectsState',
-    default: []
-})
-
-export const modalState = atom({
-    key: 'modalState',
-    default: {
-        newProjectModal: false,
-    }
+    default: [],
+    effects: [persistLocalEffect('projects')],
 })
