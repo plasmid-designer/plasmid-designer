@@ -1,20 +1,19 @@
-import styled from 'styled-components'
 import { useState } from 'react'
 import { useSetRecoilState } from 'recoil'
 import { v4 as uuid } from 'uuid'
+import styled from 'styled-components'
 
 import Modal from './Modal'
 import ModalButton from './ModalButton'
 import { projectsState } from '../../state/atoms'
+import ProjectModel from '../models/ProjectModel'
 
 const NewProjectModal = ({ className, isOpen, onClose }) => {
     const setProjects = useSetRecoilState(projectsState)
 
-    const [id, setId] = useState(uuid())
     const [name, setName] = useState('')
 
     const reset = () => {
-        setId(uuid())
         setName('')
     }
 
@@ -24,13 +23,11 @@ const NewProjectModal = ({ className, isOpen, onClose }) => {
     }
 
     const handleCreateProject = () => {
-        const project = {
-            id,
-            name,
-            sequence: [],
+        const project = new ProjectModel(uuid(), name, [])
+        if (project.isValid) {
+            setProjects(projects => ({...projects, [project.id]: project}))
+            handleClose()
         }
-        setProjects(projects => ([...projects, project]))
-        handleClose()
     }
 
     return (

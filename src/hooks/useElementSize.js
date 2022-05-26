@@ -5,7 +5,6 @@ export const useElementSize = () => {
     const [size, setSize] = useState({width: 0, height: 0})
 
     const handleObservedResize = useMemo(() => entries => {
-        console.log('resize')
         const entry = entries[0]
         const { width, height } = entry.contentRect
         setSize({ width, height })

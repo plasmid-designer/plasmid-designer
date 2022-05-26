@@ -131,7 +131,6 @@ const CodonIndex = memo(
  */
 const _Codon = props => {
     const { className, index, cursor, selection, letters, colors } = props
-    // console.log(`[${index}] ${letters}`, structuredClone(props))
     return (
         <div className={className} data-index={index}>
             {letters.map((letter, nucIndex) => (

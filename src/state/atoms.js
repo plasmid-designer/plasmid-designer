@@ -25,6 +25,6 @@ export const editorRendererState = atom({
 
 export const projectsState = atom({
     key: 'projectsState',
-    default: [],
+    default: {},
     effects: [persistLocalEffect('projects')],
 })

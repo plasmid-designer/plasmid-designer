@@ -7,8 +7,6 @@ class ColorUtil {
                 nuc: [...'ATGC'].reduce((acc, c) => ({...acc, [c]: ColorUtil._innerGetNucleotideColorSlow(c)}), {}),
                 pep: [...'FYLIVHPMCSTDEKRQNAG*'].reduce((acc, c) => ({...acc, [c]: ColorUtil._innerGetPeptideColorSlow(c)}), {}),
             }
-            console.log(`[ColorCache] Generated LUT:`)
-            console.dir(lut)
         }
         return lut
     }

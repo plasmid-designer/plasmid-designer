@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import styled from 'styled-components'
 
-import { projectsState } from '../../../state/atoms'
+import { projectListSelector } from '../../../state/selectors'
 import NewProjectModal from '../../modals/NewProjectModal'
 import Toolbar from '../Toolbar'
 
 const Sidebar = ({ className }) => {
-    const projects = useRecoilValue(projectsState)
+    const projects = useRecoilValue(projectListSelector)
 
     const [showNewProjectModal, setShowNewProjectModal] = useState(false)
 
@@ -31,7 +31,7 @@ const Sidebar = ({ className }) => {
             <div className="project-list">
                 {projects.map(project => (
                     <div className="project" key={project.id}>
-                        {project?.name}
+                        {project.name}
                     </div>
                 ))}
             </div>
