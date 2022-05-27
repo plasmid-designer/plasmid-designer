@@ -15,6 +15,7 @@ fn main() {
     tauri::Builder::default()
         .manage(RwLock::new(SequenceState::default()))
         .invoke_handler(tauri::generate_handler![
+            initialize_editor,
             calculate_sequence_data,
             sequence_insert,
             sequence_insert_all,
@@ -39,88 +40,95 @@ fn main() {
 }
 
 #[tauri::command]
+fn initialize_editor(state: tauri::State<RwLock<SequenceState>>, sequence: String) {
+    let mut state = state.write();
+    state.reset();
+    state.insert_all(sequence);
+}
+
+#[tauri::command]
 fn sequence_insert(state: tauri::State<RwLock<SequenceState>>, letter: char) {
-    state.write().insert(letter)
+    state.write().insert(letter);
 }
 
 #[tauri::command]
 fn sequence_insert_all(state: tauri::State<RwLock<SequenceState>>, text: String) {
     let text_without_whitespace = text.chars().filter(|c| !c.is_whitespace()).collect();
-    state.write().insert_all(text_without_whitespace)
+    state.write().insert_all(text_without_whitespace);
 }
 
 #[tauri::command]
 fn sequence_delete(state: tauri::State<RwLock<SequenceState>>) {
-    state.write().delete()
+    state.write().delete();
 }
 
 #[tauri::command]
 fn sequence_delete_next(state: tauri::State<RwLock<SequenceState>>) {
-    state.write().delete_next()
+    state.write().delete_next();
 }
 
 #[tauri::command]
 fn move_cursor(state: tauri::State<RwLock<SequenceState>>, index: usize) {
-    state.write().move_cursor(CursorMovement::To(index))
+    state.write().move_cursor(CursorMovement::To(index));
 }
 
 #[tauri::command]
 fn move_cursor_left(state: tauri::State<RwLock<SequenceState>>) {
-    state.write().move_cursor(CursorMovement::By(-1))
+    state.write().move_cursor(CursorMovement::By(-1));
 }
 
 #[tauri::command]
 fn move_cursor_right(state: tauri::State<RwLock<SequenceState>>) {
-    state.write().move_cursor(CursorMovement::By(1))
+    state.write().move_cursor(CursorMovement::By(1));
 }
 
 #[tauri::command]
 fn move_cursor_to_start(state: tauri::State<RwLock<SequenceState>>) {
-    state.write().move_cursor(CursorMovement::Start)
+    state.write().move_cursor(CursorMovement::Start);
 }
 
 #[tauri::command]
 fn move_cursor_to_end(state: tauri::State<RwLock<SequenceState>>) {
-    state.write().move_cursor(CursorMovement::End)
+    state.write().move_cursor(CursorMovement::End);
 }
 
 #[tauri::command]
 fn move_cursor_to_codon_start(state: tauri::State<RwLock<SequenceState>>) {
-    state.write().move_cursor(CursorMovement::CodonStart)
+    state.write().move_cursor(CursorMovement::CodonStart);
 }
 
 #[tauri::command]
 fn move_cursor_to_codon_end(state: tauri::State<RwLock<SequenceState>>) {
-    state.write().move_cursor(CursorMovement::CodonEnd)
+    state.write().move_cursor(CursorMovement::CodonEnd);
 }
 
 #[tauri::command]
 fn set_selection(state: tauri::State<RwLock<SequenceState>>, start: usize, end: usize) {
     state
         .write()
-        .move_selection(SelectionMovement::Set { start, end })
+        .move_selection(SelectionMovement::Set { start, end });
 }
 
 #[tauri::command]
 fn set_selection_all(state: tauri::State<RwLock<SequenceState>>) {
-    state.write().move_selection(SelectionMovement::All)
+    state.write().move_selection(SelectionMovement::All);
 }
 
 #[tauri::command]
 fn reset_selection(state: tauri::State<RwLock<SequenceState>>) {
-    state.write().move_selection(SelectionMovement::Reset)
+    state.write().move_selection(SelectionMovement::Reset);
 }
 
 #[tauri::command]
 fn expand_selection_left(state: tauri::State<RwLock<SequenceState>>) {
     state
         .write()
-        .move_selection(SelectionMovement::ExpandBy(-1))
+        .move_selection(SelectionMovement::ExpandBy(-1));
 }
 
 #[tauri::command]
 fn expand_selection_right(state: tauri::State<RwLock<SequenceState>>) {
-    state.write().move_selection(SelectionMovement::ExpandBy(1))
+    state.write().move_selection(SelectionMovement::ExpandBy(1));
 }
 
 #[tauri::command]

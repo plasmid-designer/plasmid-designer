@@ -116,6 +116,14 @@ impl SequenceState {
 }
 
 impl SequenceState {
+    pub fn reset(&mut self) {
+        self.sequence.clear();
+        self.codons.clear();
+        self.cursor_pos = 0;
+        self.selection = None;
+        self.sequence_dirty = false;
+    }
+
     pub fn insert(&mut self, letter: char) {
         self.inner_delete_selection_content();
 
