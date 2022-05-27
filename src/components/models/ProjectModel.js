@@ -7,7 +7,7 @@ export default class ProjectModel {
      * name?: string,
      * sequence?: string,
      * createdAt?: Date,
-     * modifiedAt?: Date,
+     * updatedAt?: Date,
      * }} params
      */
     constructor(params) {
