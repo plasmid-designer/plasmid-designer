@@ -66,7 +66,7 @@ const useEditor = () => {
     useEffect(() => {
         const initialize = async () => {
             setIsLoading(true)
-            await Bridge.initializeEditor(activeProject?.sequence ?? [])
+            await Bridge.initializeEditor(activeProject?.sequence ?? '')
             await updateSequence(true)
             setIsLoading(false)
         }
