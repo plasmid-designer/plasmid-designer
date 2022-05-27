@@ -1,14 +1,16 @@
 import { FilePlus } from 'react-feather'
 import { useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import styled from 'styled-components'
 
+import { activeProjectIdState } from '../../../state/atoms'
 import { projectListSelector } from '../../../state/selectors'
 import NewProjectModal from '../../modals/NewProjectModal'
 import Toolbar from '../Toolbar'
 
 const Sidebar = ({ className }) => {
     const projects = useRecoilValue(projectListSelector)
+    const [activeProjectId, setActiveProjectId] = useRecoilState(activeProjectIdState)
 
     const [showNewProjectModal, setShowNewProjectModal] = useState(false)
 
@@ -30,8 +32,29 @@ const Sidebar = ({ className }) => {
             </Toolbar>
             <div className="project-list">
                 {projects.map(project => (
-                    <div className="project" key={project.id}>
-                        {project.name}
+                    <div
+                        key={project.id}
+                        onClick={() => setActiveProjectId(project.id)}
+                        className={
+                            [
+                                'project',
+                                project.id === activeProjectId && 'project--active'
+                            ].filter(x => !!x).join(' ')
+                        }
+                    >
+                        <div className="row">
+                            <div className="name">{project.name}</div>
+                        </div>
+                        <div className="row">
+                            {project.updatedAt === null && (
+                                <div className="project__created">Created {project.createdAt.toLocaleDateString()}</div>
+                            )}
+                            {project.updatedAt !== null && (
+                                <div className="project__updated">Last modified {project.updatedAt.toLocaleDateString()}</div>
+                            )}
+                            <div className="spacer" />
+                            <div className="project__bp_count">{project.basePairCount}bp</div>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -71,14 +94,37 @@ export default styled(Sidebar)`
         display: flex;
         flex-flow: column;
         width: 100%;
+        gap: .2rem;
 
         & .project {
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
             cursor: pointer;
             border-radius: .25rem;
             padding: .25rem .5rem;
 
             &:hover {
-                background: hsl(0,0%,90%);
+                background: hsl(0,0%,95%);
+            }
+
+            &--active {
+                background: hsl(220, 10%, 90%) !important;
+            }
+
+            & .row {
+                display: flex;
+                align-items: center;
+                gap: .5rem;
+
+                &:last-child {
+                    font-size: .75rem;
+                    color: hsl(0,0%,50%);
+                }
+
+                & .spacer {
+                    flex-grow: 1;
+                }
             }
         }
     }

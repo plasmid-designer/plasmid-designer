@@ -126,6 +126,13 @@ export default class SequenceDataModel {
     }
 
     /**
+     * @returns {string}
+     */
+    get nucleotideString() {
+        return this.nucleotideSequence.join('')
+    }
+
+    /**
      * @returns {string[]}
      */
      get antinucleotideSequence() {

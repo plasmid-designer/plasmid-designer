@@ -28,3 +28,9 @@ export const projectsState = atom({
     default: {},
     effects: [persistLocalEffect('projects')],
 })
+
+export const activeProjectIdState = atom({
+    key: 'activeProjectIdState',
+    default: null,
+    effects: [persistLocalEffect('activeProjectId')],
+})

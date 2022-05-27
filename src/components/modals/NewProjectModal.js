@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useSetRecoilState } from 'recoil'
-import { v4 as uuid } from 'uuid'
 import styled from 'styled-components'
 
 import Modal from './Modal'
@@ -23,7 +22,7 @@ const NewProjectModal = ({ className, isOpen, onClose }) => {
     }
 
     const handleCreateProject = () => {
-        const project = new ProjectModel(uuid(), name, [])
+        const project = new ProjectModel({ name })
         if (project.isValid) {
             setProjects(projects => ({...projects, [project.id]: project}))
             handleClose()

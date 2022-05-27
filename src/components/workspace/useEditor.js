@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useRecoilState } from 'recoil'
 
-import { sequenceState } from '../../state/atoms'
+import { activeProjectSelector } from '../../state/selectors'
 
 import SequenceDataModel, { SequenceDataCursorModel, SequenceDataSelectionModel } from './SequenceDataModel'
 import useSelection from './useSelection'
@@ -26,6 +26,7 @@ const Bridge = {
     expandSelectionLeft: () => invoke('expand_selection_left'),
     expandSelectionRight: () => invoke('expand_selection_right'),
     getSelectedSequence: () => invoke('get_selected_sequence'),
+    initializeEditor: sequence => invoke('initialize_editor', { sequence }),
 }
 
 const iupacChars = "ACGTWSMKRYBVDHN-"
@@ -47,11 +48,12 @@ const iupacChars = "ACGTWSMKRYBVDHN-"
  * }}
  */
 const useEditor = () => {
+    const [isLoading, setIsLoading] = useState(false)
     const [sequenceModel, setSequenceModel] = useState(new SequenceDataModel())
     const [cursorModel, setCursorModel] = useState(new SequenceDataCursorModel())
     const [selectionModel, setSelectionModel] = useState(new SequenceDataSelectionModel())
 
-    const [, setSequence] = useRecoilState(sequenceState)
+    const [activeProject, setActiveProject] = useRecoilState(activeProjectSelector)
 
     const {
         isSelecting,
@@ -62,12 +64,20 @@ const useEditor = () => {
     } = useSelection()
 
     useEffect(() => {
-        updateSequence(true)
-    }, [])
+        const initialize = async () => {
+            setIsLoading(true)
+            await Bridge.initializeEditor(activeProject?.sequence ?? [])
+            await updateSequence(true)
+            setIsLoading(false)
+        }
+        initialize()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeProject?.id])
 
     useEffect(() => {
-        setSequence(sequenceModel.nucleotideSequence)
-    }, [setSequence, sequenceModel])
+        if (!activeProject?.id) return
+        setActiveProject(project => project.updateImmutable({ sequence: sequenceModel.nucleotideString }))
+    }, [activeProject?.id, setActiveProject, sequenceModel])
 
     useEffect(() => {
         const updateBackendSelection = async () => {
@@ -178,13 +188,14 @@ const useEditor = () => {
     }
 
     return {
+        isLoading,
         cursor: cursorModel,
         sequence: sequenceModel,
         selection: selectionModel,
         handlers: {
             handleKeyDown: wrapUpdatingAsync(handleKeyDown),
             handleMouseEvent: wrapUpdatingAsync(handleMouseEvent),
-        }
+        },
     }
 }
 

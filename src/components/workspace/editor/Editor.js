@@ -1,5 +1,6 @@
 import { useMemo, useRef, useEffect, useCallback, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import { Loader } from 'react-feather'
 import styled from 'styled-components'
 
 import useEditor from '../useEditor'
@@ -23,6 +24,7 @@ const Editor = ({ className }) => {
             handleKeyDown,
             handleMouseEvent,
         },
+        isLoading,
     } = useEditor()
 
     useEffect(() => {
@@ -44,6 +46,7 @@ const Editor = ({ className }) => {
 
     return (
         <div className={className}>
+            {isLoading && <div className="loader-overlay"><Loader size={64} /></div>}
             <EditorToolbar />
             <div
                 ref={editorRef}
@@ -79,6 +82,29 @@ export default styled(Editor)`
 
         &:focus {
             outline: none;
+        }
+    }
+
+    @keyframes spin {
+        from { opacity: 1; transform: rotate(0deg); }
+        50% { opacity: 0.5; }
+        to { opacity: 1; transform: rotate(360deg); }
+    }
+
+    .loader-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: hsla(0,0%,100%,.5);
+        z-index: 100;
+
+        & > * {
+            animation: spin 1s linear infinite;
         }
     }
 `
