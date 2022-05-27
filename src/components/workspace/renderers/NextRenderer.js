@@ -292,6 +292,7 @@ const NextRenderer = ({
     sequence,
     cursor,
     selection,
+    showCursor,
 }) => {
     return (
         <div className={className}>
@@ -303,7 +304,7 @@ const NextRenderer = ({
                     selection={selection}
                 />
             ))}
-            {(sequence.bpCount === 0 || cursor.isCursorAtEnd()) && (
+            {showCursor && (sequence.bpCount === 0 || cursor.isCursorAtEnd()) && (
                 <div className="cursor-wrapper">
                     <Cursor />
                 </div>
