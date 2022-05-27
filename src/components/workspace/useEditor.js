@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useRecoilState } from 'recoil'
 
+import { withTimer } from '../../util/withTimer'
 import { activeProjectSelector } from '../../state/selectors'
 
 import SequenceDataModel, { SequenceDataCursorModel, SequenceDataSelectionModel } from './SequenceDataModel'
@@ -96,7 +97,7 @@ const useEditor = () => {
     /**
      * @param {KeyboardEvent} e
      */
-    const handleKeyDown = useCallback(async e => {
+    const handleKeyDown = useCallback(withTimer('useEditor::handleKeyDown')(async e => {
         e.preventDefault()
         e.stopPropagation()
 
@@ -142,9 +143,9 @@ const useEditor = () => {
         }
 
         return true
-    }, [])
+    }), [])
 
-    const handleMouseEvent = useCallback(async e => {
+    const handleMouseEvent = useCallback(withTimer('useEditor::handleMouseEvent')(async e => {
         e.preventDefault()
         e.stopPropagation()
 
@@ -170,16 +171,16 @@ const useEditor = () => {
             default:
                 return false
         }
-    }, [isSelecting, startSelection, updateSelection, endSelection, selection])
+    }), [isSelecting, startSelection, updateSelection, endSelection, selection])
 
-    const updateSequence = async (force = false) => {
+    const updateSequence = withTimer('useEditor::updateSequence')(async (force = false) => {
         const data = await Bridge.calculateSequenceData(force)
         if (data.sequence) {
             setSequenceModel(new SequenceDataModel(data))
         }
         setCursorModel(new SequenceDataCursorModel(data?.cursor))
         setSelectionModel(new SequenceDataSelectionModel(data?.selection))
-    }
+    })
 
     const wrapUpdatingAsync = fn => async (...data) => {
         if (await fn(...data)) {
