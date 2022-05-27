@@ -20,7 +20,7 @@ const PlasmidViewer = ({ className, name = "Foo" }) => {
     const ref = useRef(null)
     const activeProject = useRecoilValue(activeProjectSelector)
     const sequence = useMemo(() => {
-        if (!activeProject) { return '' }
+        if (!activeProject) { return [] }
         return [...activeProject.sequence]
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeProject?.id])
