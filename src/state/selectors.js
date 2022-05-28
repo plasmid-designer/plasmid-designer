@@ -32,7 +32,7 @@ export const projectSelector = selectorFamily({
     set: projectId => ({ set }, newValue) => {
         if (newValue === null) {
             set(projectsState, state => {
-                const copy = structuredClone(state)
+                const copy = window.structuredClone(state)
                 delete copy[projectId]
                 return copy
             })
