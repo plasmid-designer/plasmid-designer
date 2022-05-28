@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import Button from '../Button'
 
 import logo from "./logo_header_dark.png"
 
