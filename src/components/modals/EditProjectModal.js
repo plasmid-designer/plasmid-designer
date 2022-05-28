@@ -28,6 +28,11 @@ const EditProjectModal = ({ className, isOpen, onClose, projectId }) => {
         }
     }
 
+    const handleDeleteProject = () => {
+        setProject(null)
+        handleClose()
+    }
+
     if (projectId === null) return null
 
     return (
@@ -38,6 +43,8 @@ const EditProjectModal = ({ className, isOpen, onClose, projectId }) => {
             footer={(
                 <>
                     <ModalButton onClick={handleClose}>Cancel</ModalButton>
+                    <div style={{ flexGrow: 1 }} />
+                    <ModalButton $destructive onClick={handleDeleteProject}>Delete</ModalButton>
                     <ModalButton $primary onClick={handleUpdateProject}>Apply changes</ModalButton>
                 </>
             )}

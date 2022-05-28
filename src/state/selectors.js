@@ -30,6 +30,14 @@ export const projectSelector = selectorFamily({
         return get(projectListSelector).find(project => project.id === projectId)
     },
     set: projectId => ({ set }, newValue) => {
+        if (newValue === null) {
+            set(projectsState, state => {
+                const copy = structuredClone(state)
+                delete copy[projectId]
+                return copy
+            })
+            return
+        }
         newValue.updatedAt = new Date()
         set(projectsState, state => ({...state, [projectId]: newValue}))
     }

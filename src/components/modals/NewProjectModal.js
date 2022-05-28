@@ -39,6 +39,7 @@ const NewProjectModal = ({ className, isOpen, onClose }) => {
             footer={(
                 <>
                     <ModalButton onClick={handleClose}>Cancel</ModalButton>
+                    <div style={{ flexGrow: 1 }} />
                     <ModalButton $primary onClick={handleCreateProject}>Create Project</ModalButton>
                 </>
             )}
