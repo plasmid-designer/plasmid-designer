@@ -1,11 +1,6 @@
 import { atom } from 'recoil'
 import { persistLocalEffect } from './persist'
 
-export const sequenceState = atom({
-    key: 'sequenceState',
-    default: [],
-})
-
 export const editorHintState = atom({
     key: 'editorHintState',
     default: {
