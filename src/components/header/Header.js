@@ -9,9 +9,6 @@ const Header = ({ className }) => {
             <div>
                 <img alt="Plasmid Logo" src={logo} />
             </div>
-            <div className="right">
-                <Button onClick={() => null}>Import FASTA</Button>
-            </div>
         </header>
     )
 }
