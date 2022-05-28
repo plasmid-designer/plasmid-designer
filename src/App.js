@@ -28,12 +28,14 @@ class ErrorBoundary extends React.Component {
             return (
                 <main className={this.props.className}>
                     <h1>Something went wrong.</h1>
-                    <div>
+                    <div style={{ textAlign: 'center' }}>
                         Please report this on GitHub:<br/>
-                        https://github.com/plasmid-designer/plasmid-designer/issues/new
+                        <a href="https://github.com/plasmid-designer/plasmid-designer/issues" target="_blank" rel="noreferrer">Report Issue</a>
                     </div>
                     <div className='error'>
-                        <pre>{this.state.error.stack}</pre>
+                        <code>
+                            <pre>{this.state.error.stack}</pre>
+                        </code>
                     </div>
                 </main>
             )
@@ -45,12 +47,23 @@ class ErrorBoundary extends React.Component {
 
 const StyledErrorBoundary = styled(ErrorBoundary)`
     width: 100%;
-    height: 100%;
+    height: 100vh;
     display: flex;
     flex-flow: column;
     justify-content: center;
     align-items: center;
     gap: 2rem;
+
+    & .error {
+        code {
+            width: 100%;
+            display: block;
+            background: hsl(0,0%,90%);
+            padding: 1rem;
+            white-space: pre-wrap;
+            border-radius: .25rem;
+        }
+    }
 `
 
 const App = ({ className }) => {
