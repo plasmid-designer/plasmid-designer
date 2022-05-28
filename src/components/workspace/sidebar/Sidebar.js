@@ -1,4 +1,4 @@
-import { FilePlus } from 'react-feather'
+import { FilePlus, Edit } from 'react-feather'
 import { useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import styled from 'styled-components'
@@ -7,12 +7,15 @@ import { activeProjectIdState } from '../../../state/atoms'
 import { projectListSelector } from '../../../state/selectors'
 import NewProjectModal from '../../modals/NewProjectModal'
 import Toolbar from '../Toolbar'
+import EditProjectModal from '../../modals/EditProjectModal'
 
 const Sidebar = ({ className }) => {
     const projects = useRecoilValue(projectListSelector)
     const [activeProjectId, setActiveProjectId] = useRecoilState(activeProjectIdState)
 
     const [showNewProjectModal, setShowNewProjectModal] = useState(false)
+    const [showEditProjectModal, setShowEditProjectModal] = useState(false)
+    const [editProjectId, setEditProjectId] = useState(null)
 
     const openNewProjectModal = () => {
         setShowNewProjectModal(true)
@@ -22,9 +25,23 @@ const Sidebar = ({ className }) => {
         setShowNewProjectModal(false)
     }
 
+    const openEditProjectModal = (e, id) => {
+        e.preventDefault()
+        e.stopPropagation()
+
+        setEditProjectId(id)
+        setShowEditProjectModal(true)
+    }
+
+    const closeEditProjectModal = () => {
+        setEditProjectId(null)
+        setShowEditProjectModal(false)
+    }
+
     return (
         <div className={className}>
             <NewProjectModal isOpen={showNewProjectModal} onClose={closeNewProjectModal} />
+            <EditProjectModal isOpen={showEditProjectModal} onClose={closeEditProjectModal} projectId={editProjectId} />
             <Toolbar className="header">
                 <div className="icon" onClick={openNewProjectModal}>
                     <FilePlus size={18} />
@@ -44,6 +61,10 @@ const Sidebar = ({ className }) => {
                     >
                         <div className="row">
                             <div className="name">{project.name}</div>
+                            <div className="spacer" />
+                            <div className="icon" onClick={e => openEditProjectModal(e, project.id)}>
+                                <Edit size={16} />
+                            </div>
                         </div>
                         <div className="row">
                             {project.updatedAt === null && (
@@ -68,6 +89,19 @@ export default styled(Sidebar)`
     width: 100%;
     user-select: none;
 
+    & .icon {
+        display: flex;
+        align-items: center;
+        padding: 0 .5rem;
+        margin: 0 -.5rem;
+        height: 100%;
+        cursor: pointer;
+
+        &:hover {
+            color: hsl(0,0%,35%);
+        }
+    }
+
     & .header {
         padding: 0 calc(2.5rem / 4);
         display: flex;
@@ -75,18 +109,6 @@ export default styled(Sidebar)`
         justify-content: flex-end;
         gap: .5rem;
 
-        & .icon {
-            display: flex;
-            align-items: center;
-            padding: 0 .5rem;
-            margin: 0 -.5rem;
-            height: 100%;
-            cursor: pointer;
-
-            &:hover {
-                color: hsl(0,0%,35%);
-            }
-        }
     }
 
     & .project-list {

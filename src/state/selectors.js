@@ -1,4 +1,4 @@
-import { selector } from 'recoil'
+import { selector, selectorFamily } from 'recoil'
 import ProjectModel from '../components/models/ProjectModel'
 import { projectsState, activeProjectIdState } from './atoms'
 
@@ -21,5 +21,16 @@ export const activeProjectSelector = selector({
         if (!activeProjectId || !newValue.isValid) return
         newValue.updatedAt = new Date()
         set(projectsState, state => ({...state, [activeProjectId]: newValue}))
+    }
+})
+
+export const projectSelector = selectorFamily({
+    key: 'projectSelector',
+    get: projectId => ({ get }) => {
+        return get(projectListSelector).find(project => project.id === projectId)
+    },
+    set: projectId => ({ set }, newValue) => {
+        newValue.updatedAt = new Date()
+        set(projectsState, state => ({...state, [projectId]: newValue}))
     }
 })

@@ -1,45 +1,44 @@
-import { useState } from 'react'
-import { useSetRecoilState } from 'recoil'
+import { useEffect, useState } from 'react'
+import { useRecoilState } from 'recoil'
 import styled from 'styled-components'
 
 import Modal from './Modal'
 import ModalButton from './ModalButton'
-import { activeProjectIdState, projectsState } from '../../state/atoms'
-import ProjectModel from '../models/ProjectModel'
+import { projectSelector } from '../../state/selectors'
 
-const NewProjectModal = ({ className, isOpen, onClose }) => {
-    const setProjects = useSetRecoilState(projectsState)
-    const setActiveProjectId = useSetRecoilState(activeProjectIdState)
+const EditProjectModal = ({ className, isOpen, onClose, projectId }) => {
+    const [project, setProject] = useRecoilState(projectSelector(projectId))
+    const [name, setName] = useState(project?.name ?? '')
 
-    const [name, setName] = useState('')
-
-    const reset = () => {
-        setName('')
-    }
+    useEffect(() => {
+        if (projectId === null) return
+        setName(project.name)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [projectId])
 
     const handleClose = () => {
-        reset()
         onClose()
     }
 
-    const handleCreateProject = () => {
-        const project = new ProjectModel({ name })
-        if (project.isValid) {
-            setProjects(projects => ({...projects, [project.id]: project}))
-            setActiveProjectId(project.id)
+    const handleUpdateProject = () => {
+        const newProject = project.updateImmutable({ name })
+        if (newProject.isValid) {
+            setProject(newProject)
             handleClose()
         }
     }
+
+    if (projectId === null) return null
 
     return (
         <Modal
             isOpen={isOpen}
             onClose={handleClose}
-            title="Create a new Project"
+            title={`Edit ${project?.name}`}
             footer={(
                 <>
                     <ModalButton onClick={handleClose}>Cancel</ModalButton>
-                    <ModalButton $primary onClick={handleCreateProject}>Create Project</ModalButton>
+                    <ModalButton $primary onClick={handleUpdateProject}>Apply changes</ModalButton>
                 </>
             )}
             contentClassName={className}
@@ -49,7 +48,7 @@ const NewProjectModal = ({ className, isOpen, onClose }) => {
     )
 }
 
-export default styled(NewProjectModal)`
+export default styled(EditProjectModal)`
     display: flex;
     justify-content: center;
 
