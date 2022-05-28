@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import Button from '../Button'
 
 import logo from "./logo_header_dark.png"
 
@@ -8,9 +7,6 @@ const Header = ({ className }) => {
         <header className={className}>
             <div>
                 <img alt="Plasmid Logo" src={logo} />
-            </div>
-            <div className="right">
-                <Button onClick={() => null}>Import FASTA</Button>
             </div>
         </header>
     )

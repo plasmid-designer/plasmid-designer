@@ -3,8 +3,7 @@ import { useRecoilValue } from 'recoil'
 import styled from 'styled-components'
 import YAPV from '@yapv/core'
 import SVG from '@yapv/svg'
-
-import { sequenceState } from '../../state/atoms'
+import { activeProjectSelector } from '../../state/selectors'
 import { useElementSize } from '../../hooks/useElementSize'
 
 const getNucleotideColor = nucleotide => {
@@ -19,11 +18,15 @@ const getNucleotideColor = nucleotide => {
 
 const PlasmidViewer = ({ className, name = "Foo" }) => {
     const ref = useRef(null)
-    const sequence = useRecoilValue(sequenceState)
+    const activeProject = useRecoilValue(activeProjectSelector)
+    const sequence = useMemo(() => {
+        if (!activeProject?.id) { return [] }
+        return [...activeProject.sequence]
+    }, [activeProject?.id, activeProject?.sequence])
     const [parentRef, size] = useElementSize()
 
     const markers = useMemo(() => {
-        return (sequence ?? []).map((nucleotide, i) => {
+        return sequence.map((nucleotide, i) => {
             return {
                 displayConfig: {
                     width: 10,
@@ -143,6 +146,7 @@ export default styled(PlasmidViewer)`
     align-items: center;
     width: 100%;
     height: 100%;
+    user-select: none;
 
     & .inner {
         width: 100%;

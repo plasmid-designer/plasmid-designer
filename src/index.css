@@ -15,3 +15,49 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/*
+ * Modal
+ */
+
+.ReactModalPortal {
+    position: absolute;
+    z-index: 1000;
+}
+
+.ReactModal__Overlay {
+    opacity: 0;
+    transition: opacity 100ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open{
+    opacity: 1;
+}
+
+.ReactModal__Overlay--before-close{
+    opacity: 0;
+}
+
+.PlasmidModalContentWrapper {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.PlasmidModalContent {
+    pointer-events: all;
+    margin: 2rem;
+    border: 1px solid rgb(204, 204, 204);
+    background: rgb(255, 255, 255);
+    overflow: hidden;
+    border-radius: 4px;
+    outline: none;
+    width: calc(min(500px, 100%));
+    max-width: 750px;
+    height: calc(min(350px, 100%));
+    max-height: 500px;
+}

@@ -3,7 +3,8 @@ import { Allotment, setSashSize } from 'allotment'
 
 import PlasmidViewer from '../yapv/PlasmidViewer'
 
-import Editor from './Editor'
+import Editor from './editor/Editor'
+import Sidebar from './sidebar/Sidebar'
 
 setSashSize(20)
 
@@ -11,6 +12,9 @@ const Workspace = ({className}) => {
     return (
         <div className={className}>
             <Allotment proportionalLayout vertical={false}>
+                <Allotment.Pane minSize={250} preferredSize={250} maxSize={250}>
+                    <Sidebar />
+                </Allotment.Pane>
                 <Allotment.Pane minSize={300}>
                     <Editor />
                 </Allotment.Pane>

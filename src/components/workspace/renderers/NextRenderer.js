@@ -131,7 +131,6 @@ const CodonIndex = memo(
  */
 const _Codon = props => {
     const { className, index, cursor, selection, letters, colors } = props
-    // console.log(`[${index}] ${letters}`, structuredClone(props))
     return (
         <div className={className} data-index={index}>
             {letters.map((letter, nucIndex) => (
@@ -293,6 +292,7 @@ const NextRenderer = ({
     sequence,
     cursor,
     selection,
+    showCursor,
 }) => {
     return (
         <div className={className}>
@@ -304,15 +304,34 @@ const NextRenderer = ({
                     selection={selection}
                 />
             ))}
+            {showCursor && (sequence.bpCount === 0 || cursor.isCursorAtEnd()) && (
+                <div className="cursor-wrapper">
+                    <Cursor />
+                </div>
+            )}
+            <div className="filler" data-index={sequence.bpCount}>&nbsp;</div>
         </div>
     )
 }
 
 export default styled(NextRenderer)`
     display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
     flex-flow: row wrap;
     font-family: monospace;
     font-size: 14pt;
     cursor: text;
     width: 100%;
+
+    & .cursor-wrapper {
+        margin-top: 0.45rem;
+        position: relative;
+        height: 1rem;
+    }
+
+    & .filler {
+        flex-grow: 1;
+        background: transparent;
+    }
 `
