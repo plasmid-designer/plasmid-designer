@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import useEditor from '../useEditor'
 import EditorToolbar from './EditorToolbar'
 
-import { editorRendererState } from '../../../state/atoms'
+import { activeProjectIdState, editorRendererState } from '../../../state/atoms'
 
 import LegacyRenderer from '../renderers/LegacyRenderer'
 import NextRenderer from '../renderers/NextRenderer'
@@ -14,7 +14,9 @@ import NextRenderer from '../renderers/NextRenderer'
 const Editor = ({ className }) => {
     const editorRef = useRef()
     const [renderCursor, setRenderCursor] = useState(false)
+
     const rendererName = useRecoilValue(editorRendererState)
+    const activeProjectId = useRecoilValue(activeProjectIdState)
 
     const {
         cursor,
@@ -47,21 +49,30 @@ const Editor = ({ className }) => {
     return (
         <div className={className}>
             {isLoading && <div className="loader-overlay"><Loader size={64} /></div>}
-            <EditorToolbar />
-            <div
-                ref={editorRef}
-                className="editor"
-                onKeyDown={handleKeyDown}
-                onMouseDown={handleMouseEvent}
-                onMouseMove={handleMouseEvent}
-                onMouseUp={handleMouseEvent}
-                onFocus={handleFocusChange(true)}
-                onClick={handleFocusChange(true, true)}
-                onBlur={handleFocusChange(false)}
-                tabIndex={0}
-            >
-                <RendererComponent sequence={sequence} cursor={cursor} selection={selection} showCursor={renderCursor} />
-            </div>
+            {activeProjectId === null && (
+                <div className="no-project">
+                    Please create or select a project from the sidebar.
+                </div>
+            )}
+            {activeProjectId !== null && (
+                <>
+                    <EditorToolbar />
+                    <div
+                        ref={editorRef}
+                        className="editor"
+                        onKeyDown={handleKeyDown}
+                        onMouseDown={handleMouseEvent}
+                        onMouseMove={handleMouseEvent}
+                        onMouseUp={handleMouseEvent}
+                        onFocus={handleFocusChange(true)}
+                        onClick={handleFocusChange(true, true)}
+                        onBlur={handleFocusChange(false)}
+                        tabIndex={0}
+                    >
+                        <RendererComponent sequence={sequence} cursor={cursor} selection={selection} showCursor={renderCursor} />
+                    </div>
+                </>
+            )}
         </div>
     )
 }
@@ -83,6 +94,15 @@ export default styled(Editor)`
         &:focus {
             outline: none;
         }
+    }
+
+    .no-project {
+        user-select: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
     }
 
     @keyframes spin {
