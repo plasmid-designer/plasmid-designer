@@ -2,7 +2,7 @@ name: Release Plasmid Designer
 on:
   push:
     branches:
-      - release
+      - main
 
 jobs:
   lint:
@@ -17,6 +17,7 @@ jobs:
     - name: Lint
       run: yarn && yarn lint
   release:
+    if: github.ref_name == 'main'
     needs: lint
     strategy:
       fail-fast: false
