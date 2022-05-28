@@ -7,6 +7,10 @@ Many features aren't implemented yet and there might still be issues with some b
 
 Feel free to give it a try and open an issue if you encounter bugs or want to request a feature!
 
+### Roadmap
+
+The roadmap can be found here: [Plasmid Designer Roadmap](https://github.com/orgs/plasmid-designer/projects/1/views/1)
+
 ## What is it?
 
 Plasmid Designer is a __free and open source__ tool for DNA editing and plasmid design. It's meant to provide an easy and frictionless entry into the world of genetic engineering.
