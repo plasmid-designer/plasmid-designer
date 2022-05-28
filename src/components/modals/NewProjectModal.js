@@ -4,11 +4,12 @@ import styled from 'styled-components'
 
 import Modal from './Modal'
 import ModalButton from './ModalButton'
-import { projectsState } from '../../state/atoms'
+import { activeProjectIdState, projectsState } from '../../state/atoms'
 import ProjectModel from '../models/ProjectModel'
 
 const NewProjectModal = ({ className, isOpen, onClose }) => {
     const setProjects = useSetRecoilState(projectsState)
+    const setActiveProjectId = useSetRecoilState(activeProjectIdState)
 
     const [name, setName] = useState('')
 
@@ -25,6 +26,7 @@ const NewProjectModal = ({ className, isOpen, onClose }) => {
         const project = new ProjectModel({ name })
         if (project.isValid) {
             setProjects(projects => ({...projects, [project.id]: project}))
+            setActiveProjectId(project.id)
             handleClose()
         }
     }
