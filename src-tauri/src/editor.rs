@@ -2,7 +2,10 @@ use std::collections::VecDeque;
 
 use plasmid::{traits::TryFromLetter, uni::IupacNucleotide};
 
-use crate::shared::DisplayCodon;
+use crate::{
+    history::{EditorSnapshot, EditorSnapshotHistory},
+    shared::DisplayCodon,
+};
 
 pub enum CursorMovement {
     To(usize),
@@ -20,7 +23,7 @@ pub enum SelectionMovement {
     All,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Selection {
     pub start: usize,
     pub end: usize,
@@ -34,16 +37,50 @@ impl Selection {
     }
 }
 
-#[derive(Default)]
-pub struct SequenceState {
+pub struct Editor {
     pub sequence_dirty: bool,
     pub cursor_pos: usize,
     pub sequence: VecDeque<IupacNucleotide>,
     pub codons: Vec<DisplayCodon>,
     pub selection: Option<Selection>,
+    pub history: EditorSnapshotHistory,
 }
 
-impl SequenceState {
+impl Default for Editor {
+    fn default() -> Self {
+        let mut editor = Self {
+            sequence_dirty: false,
+            cursor_pos: 0,
+            sequence: VecDeque::new(),
+            codons: Vec::new(),
+            selection: None,
+            history: EditorSnapshotHistory::default(),
+        };
+        editor.history.push(editor.snapshot());
+        editor
+    }
+}
+
+// #region Private API
+
+impl Editor {
+    fn snapshot(&self) -> EditorSnapshot {
+        EditorSnapshot {
+            cursor_pos: self.cursor_pos,
+            selection: self.selection.clone(),
+            sequence: Vec::from_iter(self.sequence.iter().cloned()),
+        }
+    }
+
+    fn apply_snapshot(&mut self, snapshot: EditorSnapshot) {
+        self.cursor_pos = snapshot.cursor_pos;
+        self.selection = snapshot.selection.clone();
+        let new_sequence = VecDeque::from_iter(snapshot.sequence.iter().cloned());
+        let became_dirty = self.sequence != new_sequence;
+        self.sequence = new_sequence;
+        self.sequence_dirty = became_dirty;
+    }
+
     #[inline]
     fn inner_insert_nucleotide(&mut self, nucleotide: IupacNucleotide) {
         match self.cursor_pos {
@@ -51,7 +88,7 @@ impl SequenceState {
             i if i == self.sequence.len() => self.sequence.push_back(nucleotide),
             i => self.sequence.insert(i, nucleotide),
         }
-        self.move_cursor(CursorMovement::By(1));
+        self.inner_move_cursor(CursorMovement::By(1), true);
     }
 
     fn inner_insert_multiple_nucleotides(&mut self, nucleotides: &[IupacNucleotide]) {
@@ -61,10 +98,10 @@ impl SequenceState {
             nucleotides.iter().cloned(),
         );
         self.sequence = VecDeque::from(vec);
-        self.move_cursor(CursorMovement::By(nucleotides.len() as isize));
+        self.inner_move_cursor(CursorMovement::By(nucleotides.len() as isize), true);
     }
 
-    fn inner_move_cursor(&mut self, movement: CursorMovement) {
+    fn inner_move_cursor(&mut self, movement: CursorMovement, reset_selection: bool) {
         match movement {
             CursorMovement::To(index) => {
                 if index <= self.sequence.len() {
@@ -99,6 +136,83 @@ impl SequenceState {
                 self.cursor_pos = self.cursor_pos.saturating_add(3 - self.cursor_pos % 3);
             }
         }
+
+        if reset_selection {
+            self.inner_reset_selection();
+        }
+    }
+
+    fn inner_move_selection(&mut self, movement: SelectionMovement) {
+        match movement {
+            SelectionMovement::Reset => {
+                self.selection = None;
+            }
+            SelectionMovement::Set { start, end } => {
+                self.selection = match start.cmp(&end) {
+                    std::cmp::Ordering::Less | std::cmp::Ordering::Greater => {
+                        Some(Selection::new(start, end, self.sequence.len()))
+                    }
+                    std::cmp::Ordering::Equal => None,
+                };
+                self.inner_move_cursor(CursorMovement::To(end), false);
+            }
+            SelectionMovement::All => {
+                self.selection = Some(Selection::new(0, self.sequence.len(), self.sequence.len()));
+            }
+            SelectionMovement::ExpandBy(distance) => {
+                let abs_distance = distance.abs() as usize;
+                match &self.selection {
+                    Some(selection) => {
+                        if distance.is_negative() {
+                            if self.cursor_pos == selection.end {
+                                let end = selection.end.saturating_sub(abs_distance);
+                                self.selection =
+                                    Some(Selection::new(selection.start, end, self.sequence.len()));
+                                self.inner_move_cursor(CursorMovement::To(end), false);
+                            } else if self.cursor_pos == selection.start {
+                                let start = selection.start.saturating_sub(abs_distance);
+                                self.selection =
+                                    Some(Selection::new(start, selection.end, self.sequence.len()));
+                                self.inner_move_cursor(CursorMovement::To(start), false);
+                            }
+                        } else {
+                            if self.cursor_pos == selection.end {
+                                let end = selection.end.saturating_add(abs_distance);
+                                self.selection =
+                                    Some(Selection::new(selection.start, end, self.sequence.len()));
+                                self.inner_move_cursor(CursorMovement::To(end), false);
+                            } else if self.cursor_pos == selection.start {
+                                let start = selection.start.saturating_add(abs_distance);
+                                self.selection =
+                                    Some(Selection::new(start, selection.end, self.sequence.len()));
+                                self.inner_move_cursor(CursorMovement::To(start), false);
+                            }
+                        }
+                    }
+                    None => {
+                        if distance.is_negative() {
+                            let start = self
+                                .cursor_pos
+                                .saturating_sub(abs_distance)
+                                .min(self.sequence.len())
+                                .max(0);
+                            self.selection =
+                                Some(Selection::new(start, self.cursor_pos, self.sequence.len()));
+                            self.inner_move_cursor(CursorMovement::To(start), false);
+                        } else {
+                            let end = self
+                                .cursor_pos
+                                .saturating_add(abs_distance)
+                                .min(self.sequence.len())
+                                .max(0);
+                            self.selection =
+                                Some(Selection::new(self.cursor_pos, end, self.sequence.len()));
+                            self.inner_move_cursor(CursorMovement::To(end), false);
+                        }
+                    }
+                };
+            }
+        }
     }
 
     fn inner_reset_selection(&mut self) {
@@ -115,13 +229,19 @@ impl SequenceState {
     }
 }
 
-impl SequenceState {
+// #endregion
+
+// #region Public API
+
+impl Editor {
     pub fn reset(&mut self) {
         self.sequence.clear();
         self.codons.clear();
         self.cursor_pos = 0;
         self.selection = None;
         self.sequence_dirty = false;
+        self.history.clear();
+        self.history.push(self.snapshot());
     }
 
     pub fn insert(&mut self, letter: char) {
@@ -131,6 +251,8 @@ impl SequenceState {
             self.inner_insert_nucleotide(nucleotide);
             self.sequence_dirty = true;
         }
+
+        self.history.push(self.snapshot());
     }
 
     pub fn insert_all(&mut self, text: String) {
@@ -144,6 +266,8 @@ impl SequenceState {
             self.inner_insert_multiple_nucleotides(&nucleotides);
             self.sequence_dirty = true;
         }
+
+        self.history.push(self.snapshot());
     }
 
     pub fn delete(&mut self) {
@@ -161,7 +285,9 @@ impl SequenceState {
         if self.cursor_pos != 0 {
             self.sequence_dirty = true;
         }
-        self.move_cursor(CursorMovement::By(-1));
+        self.inner_move_cursor(CursorMovement::By(-1), true);
+
+        self.history.push(self.snapshot());
     }
 
     pub fn delete_next(&mut self) {
@@ -174,84 +300,20 @@ impl SequenceState {
             i => _ = self.sequence.remove(i),
         }
         self.sequence_dirty = true;
+
+        self.history.push(self.snapshot());
     }
 
     pub fn move_cursor(&mut self, movement: CursorMovement) {
-        self.inner_move_cursor(movement);
-        self.inner_reset_selection();
+        self.inner_move_cursor(movement, true);
+
+        self.history.push(self.snapshot());
     }
 
     pub fn move_selection(&mut self, movement: SelectionMovement) {
-        match movement {
-            SelectionMovement::Reset => {
-                self.selection = None;
-            }
-            SelectionMovement::Set { start, end } => {
-                self.selection = match start.cmp(&end) {
-                    std::cmp::Ordering::Less | std::cmp::Ordering::Greater => {
-                        Some(Selection::new(start, end, self.sequence.len()))
-                    }
-                    std::cmp::Ordering::Equal => None,
-                };
-                self.inner_move_cursor(CursorMovement::To(end));
-            }
-            SelectionMovement::All => {
-                self.selection = Some(Selection::new(0, self.sequence.len(), self.sequence.len()));
-            }
-            SelectionMovement::ExpandBy(distance) => {
-                let abs_distance = distance.abs() as usize;
-                match &self.selection {
-                    Some(selection) => {
-                        if distance.is_negative() {
-                            if self.cursor_pos == selection.end {
-                                let end = selection.end.saturating_sub(abs_distance);
-                                self.selection =
-                                    Some(Selection::new(selection.start, end, self.sequence.len()));
-                                self.inner_move_cursor(CursorMovement::To(end));
-                            } else if self.cursor_pos == selection.start {
-                                let start = selection.start.saturating_sub(abs_distance);
-                                self.selection =
-                                    Some(Selection::new(start, selection.end, self.sequence.len()));
-                                self.inner_move_cursor(CursorMovement::To(start));
-                            }
-                        } else {
-                            if self.cursor_pos == selection.end {
-                                let end = selection.end.saturating_add(abs_distance);
-                                self.selection =
-                                    Some(Selection::new(selection.start, end, self.sequence.len()));
-                                self.inner_move_cursor(CursorMovement::To(end));
-                            } else if self.cursor_pos == selection.start {
-                                let start = selection.start.saturating_add(abs_distance);
-                                self.selection =
-                                    Some(Selection::new(start, selection.end, self.sequence.len()));
-                                self.inner_move_cursor(CursorMovement::To(start));
-                            }
-                        }
-                    }
-                    None => {
-                        if distance.is_negative() {
-                            let start = self
-                                .cursor_pos
-                                .saturating_sub(abs_distance)
-                                .min(self.sequence.len())
-                                .max(0);
-                            self.selection =
-                                Some(Selection::new(start, self.cursor_pos, self.sequence.len()));
-                            self.inner_move_cursor(CursorMovement::To(start));
-                        } else {
-                            let end = self
-                                .cursor_pos
-                                .saturating_add(abs_distance)
-                                .min(self.sequence.len())
-                                .max(0);
-                            self.selection =
-                                Some(Selection::new(self.cursor_pos, end, self.sequence.len()));
-                            self.inner_move_cursor(CursorMovement::To(end));
-                        }
-                    }
-                };
-            }
-        }
+        self.inner_move_selection(movement);
+
+        self.history.push(self.snapshot());
     }
 
     // TODO: This could be heavily optimized by keeping track of "dirty" coding regions
@@ -287,17 +349,33 @@ impl SequenceState {
             None => String::default(),
         }
     }
+
+    pub fn undo(&mut self) {
+        if let Some(snapshot) = self.history.get_undo_snapshot() {
+            self.apply_snapshot(snapshot);
+        }
+    }
+
+    pub fn redo(&mut self) {
+        if let Some(snapshot) = self.history.get_redo_snapshot() {
+            self.apply_snapshot(snapshot);
+        }
+    }
 }
+
+// #endregion
 
 #[cfg(test)]
 mod tests {
-    use super::{SelectionMovement, SequenceState};
+    use crate::history::EditorSnapshot;
+
+    use super::{Editor, SelectionMovement};
 
     #[test]
     fn test_insert() {
         use plasmid::prelude::IupacNucleotide::*;
 
-        let mut state = SequenceState::default();
+        let mut state = Editor::default();
         state.insert('A');
         assert_eq!(state.sequence, [A]);
     }
@@ -306,7 +384,7 @@ mod tests {
     fn test_insert_with_selection() {
         use plasmid::prelude::IupacNucleotide::*;
 
-        let mut state = SequenceState::default();
+        let mut state = Editor::default();
         state.insert('A');
         state.insert('C');
         state.insert('G');
@@ -319,7 +397,7 @@ mod tests {
     fn test_insert_all() {
         use plasmid::prelude::IupacNucleotide::*;
 
-        let mut state = SequenceState::default();
+        let mut state = Editor::default();
         state.insert_all("ACGT".to_string());
         assert_eq!(state.sequence, [A, C, G, T]);
     }
@@ -328,13 +406,13 @@ mod tests {
     fn test_insert_all_with_selection() {
         use plasmid::prelude::IupacNucleotide::*;
 
-        let mut state = SequenceState::default();
+        let mut state = Editor::default();
         state.insert_all("ACCCT".to_string());
         state.move_selection(SelectionMovement::Set { start: 1, end: 5 });
         state.insert_all("TG".to_string());
         assert_eq!(state.sequence, [A, T, G]);
 
-        let mut state = SequenceState::default();
+        let mut state = Editor::default();
         state.insert_all("ACCCT".to_string());
         state.move_selection(SelectionMovement::Set { start: 0, end: 5 });
         state.insert_all("TG".to_string());
@@ -345,7 +423,7 @@ mod tests {
     fn test_delete() {
         use plasmid::prelude::IupacNucleotide::*;
 
-        let mut state = SequenceState::default();
+        let mut state = Editor::default();
         state.insert_all("ACGT".to_string());
         state.delete();
         assert_eq!(state.sequence, [A, C, G]);
@@ -357,7 +435,7 @@ mod tests {
     fn test_delete_with_selection() {
         use plasmid::prelude::IupacNucleotide::*;
 
-        let mut state = SequenceState::default();
+        let mut state = Editor::default();
         state.insert_all("ACGT".to_string());
         state.move_selection(SelectionMovement::Set { start: 1, end: 3 });
         state.delete();
@@ -368,7 +446,7 @@ mod tests {
     fn test_delete_next() {
         use plasmid::prelude::IupacNucleotide::*;
 
-        let mut state = SequenceState::default();
+        let mut state = Editor::default();
         state.insert_all("ACGT".to_string());
         state.delete_next();
         assert_eq!(state.sequence, [A, C, G, T]);
@@ -383,7 +461,7 @@ mod tests {
     fn test_move_cursor() {
         use super::CursorMovement;
 
-        let mut state = SequenceState::default();
+        let mut state = Editor::default();
         state.insert_all("ACGT".to_string());
 
         state.move_cursor(CursorMovement::To(4));
@@ -412,5 +490,28 @@ mod tests {
 
         state.move_cursor(CursorMovement::End);
         assert_eq!(state.cursor_pos, 4);
+    }
+
+    #[test]
+    fn test_undo_redo() {
+        use super::IupacNucleotide::{A, C, G, T};
+
+        let mut state = Editor::default();
+        state.insert_all("ACGT".to_string());
+
+        assert_eq!(
+            state.history.peek_undo_snapshot(),
+            Some(&EditorSnapshot::default())
+        );
+
+        state.undo();
+        assert!(state.sequence.is_empty());
+        assert_eq!(state.cursor_pos, 0);
+        assert_eq!(state.selection, None);
+
+        state.redo();
+        assert_eq!(state.sequence, [A, C, G, T]);
+        assert_eq!(state.cursor_pos, 4);
+        assert_eq!(state.selection, None);
     }
 }
