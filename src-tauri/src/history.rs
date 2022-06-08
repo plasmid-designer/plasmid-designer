@@ -41,7 +41,7 @@ impl EditorSnapshotHistory {
     }
 
     pub fn get_redo_snapshot(&mut self) -> Option<EditorSnapshot> {
-        if self.index < self.snapshots.len() {
+        if self.index < self.snapshots.len() - 1 {
             self.index += 1;
             let result = Some(self.snapshots[self.index].clone());
             result
@@ -61,7 +61,7 @@ impl EditorSnapshotHistory {
 
     #[cfg(test)]
     pub fn peek_redo_snapshot(&self) -> Option<&EditorSnapshot> {
-        if self.index < self.snapshots.len() {
+        if self.index < self.snapshots.len() - 1 {
             Some(&self.snapshots[self.index + 1])
         } else {
             None
