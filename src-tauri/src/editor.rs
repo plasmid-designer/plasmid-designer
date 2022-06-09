@@ -273,6 +273,7 @@ impl Editor {
     pub fn delete(&mut self) {
         if self.selection.is_some() {
             self.inner_delete_selection_content();
+            self.history.push(self.snapshot());
             return;
         }
 
@@ -282,11 +283,12 @@ impl Editor {
             i if i == self.sequence.len() => _ = self.sequence.pop_back(),
             i => _ = self.sequence.remove(i - 1),
         }
+
         if self.cursor_pos != 0 {
             self.sequence_dirty = true;
         }
-        self.inner_move_cursor(CursorMovement::By(-1), true);
 
+        self.inner_move_cursor(CursorMovement::By(-1), true);
         self.history.push(self.snapshot());
     }
 
@@ -307,13 +309,13 @@ impl Editor {
     pub fn move_cursor(&mut self, movement: CursorMovement) {
         self.inner_move_cursor(movement, true);
 
-        self.history.push(self.snapshot());
+        // self.history.push(self.snapshot());
     }
 
     pub fn move_selection(&mut self, movement: SelectionMovement) {
         self.inner_move_selection(movement);
 
-        self.history.push(self.snapshot());
+        // self.history.push(self.snapshot());
     }
 
     // TODO: This could be heavily optimized by keeping track of "dirty" coding regions
