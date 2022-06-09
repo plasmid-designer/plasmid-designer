@@ -323,6 +323,7 @@ export default styled(NextRenderer)`
     font-size: 14pt;
     cursor: text;
     width: 100%;
+    padding: 1rem;
 
     & .cursor-wrapper {
         margin-top: 0.45rem;

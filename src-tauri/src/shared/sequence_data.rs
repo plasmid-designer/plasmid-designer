@@ -20,8 +20,8 @@ pub struct SelectionData {
     pub end: usize,
 }
 
-impl From<&crate::state::Selection> for SelectionData {
-    fn from(selection: &crate::state::Selection) -> Self {
+impl From<&crate::editor::Selection> for SelectionData {
+    fn from(selection: &crate::editor::Selection) -> Self {
         SelectionData {
             start: selection.start,
             end: selection.end,
