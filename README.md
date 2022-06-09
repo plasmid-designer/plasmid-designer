@@ -21,7 +21,7 @@ The primary goal of Plasmid Designer is to be beginner friendly and provide a gr
 
 ## Screenshots
 
-![](./screenshots/v0_1_0__editor.png)
+![](./screenshots/v0_3_0__editor.png)
 
 
 <!-- Badges -->
