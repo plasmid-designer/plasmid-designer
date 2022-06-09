@@ -3,6 +3,7 @@ import { useRecoilState } from 'recoil'
 
 import { editorHintState, editorRendererState } from '../../../state/atoms'
 
+import { rendererList } from '../renderers'
 import MenuButton from '../../MenuButton'
 import Toolbar from '../Toolbar'
 
@@ -53,14 +54,17 @@ const EditorToolbar = ({ className }) => {
                 </MenuButton>
             </div>
             <div className="input_container" style={{flexGrow: 1}}></div>
-            <div className="input_container">
-                <div className="input_wrapper">
-                    <select id="renderer-input" value={renderer} onChange={e => setRenderer(e.target.value)} placeholder="Renderer">
-                        <option value="legacy">Legacy Renderer</option>
-                        <option value="next">Next Renderer (Default)</option>
-                    </select>
+            { rendererList.length > 1 && (
+                <div className="input_container">
+                    <div className="input_wrapper">
+                        <select id="renderer-input" value={renderer} onChange={e => setRenderer(e.target.value)} placeholder="Renderer">
+                            {rendererList.map(info => (
+                                <option key={info.key} value={info.key}>{info.name}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
-            </div>
+            )}
         </Toolbar>
     )
 }
