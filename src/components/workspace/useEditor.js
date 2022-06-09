@@ -26,6 +26,8 @@ const Bridge = {
     expandSelectionLeft: () => invoke('expand_selection_left'),
     expandSelectionRight: () => invoke('expand_selection_right'),
     getSelectedSequence: () => invoke('get_selected_sequence'),
+    undo: () => invoke('undo'),
+    redo: () => invoke('redo'),
     initializeEditor: sequence => invoke('initialize_editor', { sequence }),
 }
 
@@ -122,23 +124,41 @@ const useEditor = () => {
                 else await Bridge.moveCursorRight()
                 break
             default:
-                if (ctrl && upperKey === 'C') {
-                    await navigator.clipboard.writeText(await Bridge.getSelectedSequence())
-                    return true
-                } else if (ctrl && upperKey === 'V') {
-                    const text = await navigator.clipboard.readText()
-                    await Bridge.insertAll(text)
-                    return true
-                } else if (ctrl && upperKey === 'A') {
-                    await Bridge.selectAll()
-                    return true
-                } else if (ctrl && upperKey === 'X') {
-                    await navigator.clipboard.writeText(await Bridge.getSelectedSequence())
-                    await Bridge.delete()
+                if (ctrl) {
+                    let should_return = true
+                    switch (upperKey) {
+                        case 'C':
+                            await navigator.clipboard.writeText(await Bridge.getSelectedSequence())
+                            break
+                        case 'V':
+                            await (async () => {
+                                const text = await navigator.clipboard.readText()
+                                await Bridge.insertAll(text)
+                            })()
+                            break
+                        case 'A':
+                            await Bridge.selectAll()
+                            break
+                        case 'X':
+                            await navigator.clipboard.writeText(await Bridge.getSelectedSequence())
+                            await Bridge.delete()
+                            break
+                        case 'Z':
+                            await Bridge.undo()
+                            break
+                        case 'Y':
+                            await Bridge.redo()
+                            break
+                        default:
+                            should_return = false
+                            break
+                    }
+                    if (should_return) return true
                 }
                 if (iupacChars.includes(upperKey)) {
                     await Bridge.insert(upperKey)
                 }
+                return true
         }
 
         return true

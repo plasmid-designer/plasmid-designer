@@ -7,9 +7,7 @@ import useEditor from '../useEditor'
 import EditorToolbar from './EditorToolbar'
 
 import { activeProjectIdState, editorRendererState } from '../../../state/atoms'
-
-import LegacyRenderer from '../renderers/LegacyRenderer'
-import NextRenderer from '../renderers/NextRenderer'
+import { rendererList, NextRenderer } from '../renderers'
 
 const Editor = ({ className }) => {
     const editorRef = useRef()
@@ -39,11 +37,7 @@ const Editor = ({ className }) => {
     }, [])
 
     const RendererComponent = useMemo(() => {
-        switch (rendererName) {
-            case 'legacy': return LegacyRenderer
-            case 'next': return NextRenderer
-            default: return NextRenderer
-        }
+        return rendererList.find(({ key }) => key === rendererName)?.component ?? NextRenderer
     }, [rendererName])
 
     return (
@@ -89,7 +83,6 @@ export default styled(Editor)`
         width: 100%;
         height: 100%;
         overflow: auto;
-        padding: .5rem;
 
         &:focus {
             outline: none;

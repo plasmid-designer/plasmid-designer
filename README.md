@@ -7,6 +7,8 @@ Many features aren't implemented yet and there might still be issues with some b
 
 Feel free to give it a try and open an issue if you encounter bugs or want to request a feature!
 
+[![Join the Discussion on GitHub](./screenshots/btn_join_discussion.png)](https://github.com/plasmid-designer/plasmid-designer/discussions)
+
 ### Roadmap
 
 The roadmap can be found here: [Plasmid Designer Roadmap](https://github.com/orgs/plasmid-designer/projects/1/views/1)
@@ -19,7 +21,7 @@ The primary goal of Plasmid Designer is to be beginner friendly and provide a gr
 
 ## Screenshots
 
-![](./screenshots/v0_1_0__editor.png)
+![](./screenshots/v0_3_0__editor.png)
 
 
 <!-- Badges -->
