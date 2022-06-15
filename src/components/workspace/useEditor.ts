@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useRecoilState } from 'recoil'
 
@@ -33,12 +33,9 @@ const Bridge = {
 
 const iupacChars = "ACGTWSMKRYBVDHN-"
 
-/**
- * @param {HTMLElement} currentTarget
- */
- const findIndex = (currentTarget) => {
+const findIndex = (currentTarget: HTMLElement) => {
     if (currentTarget.dataset.index) return parseInt(currentTarget.dataset.index)
-    if (currentTarget.parentElement.dataset.index) return parseInt(currentTarget.parentElement.dataset.index)
+    if (currentTarget.parentElement?.dataset.index) return parseInt(currentTarget.parentElement.dataset.index)
     return null
 }
 
@@ -48,8 +45,8 @@ type useEditorReturnTypes = {
     sequence: import('./SequenceDataModel').default,
     selection: import('./SequenceDataModel').SequenceDataSelectionModel,
     handlers: {
-        handleKeyDown: (KeyboardEvent) => void,
-        handleMouseEvent: (MouseEvent) => void,
+        handleKeyDown: (e: KeyboardEvent) => void,
+        handleMouseEvent: (e: MouseEvent) => void,
     }
 }
 
@@ -82,7 +79,7 @@ const useEditor = (): useEditorReturnTypes => {
 
     useEffect(() => {
         if (!activeProject?.id) return
-        setActiveProject(project => project.updateImmutable({ sequence: sequenceModel.nucleotideString }))
+        setActiveProject(project => project?.updateImmutable({ sequence: sequenceModel.nucleotideString }) ?? null)
     }, [activeProject?.id, setActiveProject, sequenceModel])
 
     useEffect(() => {
@@ -102,7 +99,7 @@ const useEditor = (): useEditorReturnTypes => {
     /**
      * @param {KeyboardEvent} e
      */
-    const handleKeyDown = useCallback(async e => {
+    const handleKeyDown = useCallback(async (e: React.KeyboardEvent) => {
         e.preventDefault()
         e.stopPropagation()
 
@@ -168,11 +165,11 @@ const useEditor = (): useEditorReturnTypes => {
         return true
     }, [])
 
-    const handleMouseEvent = useCallback(async e => {
+    const handleMouseEvent = useCallback(async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
         e.preventDefault()
         e.stopPropagation()
 
-        const index = findIndex(e.target)
+        const index = findIndex(e.currentTarget)
 
         switch (e.type) {
             case 'mousedown':
@@ -197,7 +194,13 @@ const useEditor = (): useEditorReturnTypes => {
     }, [isSelecting, startSelection, updateSelection, endSelection, selection])
 
     const updateSequence = async (force = false) => {
-        const data: { selection?: {}, cursor?: {}, sequence?: {} } = await Bridge.calculateSequenceData(force)
+        // TODO: Fix type annotations!
+        type BridgeCalculateSequenceDataType = {
+            selection: Record<string, unknown>,
+            cursor: Record<string, unknown>,
+            sequence?: Record<string, unknown>
+        }
+        const data = await Bridge.calculateSequenceData(force) as BridgeCalculateSequenceDataType
         if (data.sequence) {
             setSequenceModel(new SequenceDataModel(data))
         }
@@ -205,7 +208,8 @@ const useEditor = (): useEditorReturnTypes => {
         setSelectionModel(new SequenceDataSelectionModel(data?.selection))
     }
 
-    const wrapUpdatingAsync = fn => async (...data) => {
+    type RelayAsyncFn<T> = (...data: unknown[]) => Promise<T>
+    const wrapUpdatingAsync = (fn: RelayAsyncFn<boolean>) => async (...data: unknown[]) => {
         if (await fn(...data)) {
             await updateSequence()
         }

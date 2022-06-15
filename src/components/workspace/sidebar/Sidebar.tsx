@@ -1,13 +1,14 @@
 import { FilePlus, Edit } from 'react-feather'
 import { useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import styled, { StyledProps } from 'styled-components'
+import styled from 'styled-components'
 
 import { activeProjectIdState } from '../../../state/atoms'
 import { projectListSelector } from '../../../state/selectors'
 import NewProjectModal from '../../modals/NewProjectModal'
 import Toolbar from '../Toolbar'
 import EditProjectModal from '../../modals/EditProjectModal'
+import ProjectModel from '../../models/ProjectModel'
 
 type Props = {
     className?: string,
@@ -19,7 +20,7 @@ const Sidebar = ({ className }: Props) => {
 
     const [showNewProjectModal, setShowNewProjectModal] = useState(false)
     const [showEditProjectModal, setShowEditProjectModal] = useState(false)
-    const [editProjectId, setEditProjectId] = useState(null)
+    const [editProjectId, setEditProjectId] = useState('')
 
     const openNewProjectModal = () => {
         setShowNewProjectModal(true)
@@ -29,7 +30,7 @@ const Sidebar = ({ className }: Props) => {
         setShowNewProjectModal(false)
     }
 
-    const openEditProjectModal = (e, id) => {
+    const openEditProjectModal = (e: React.MouseEvent, id: string) => {
         e.preventDefault()
         e.stopPropagation()
 
@@ -38,7 +39,7 @@ const Sidebar = ({ className }: Props) => {
     }
 
     const closeEditProjectModal = () => {
-        setEditProjectId(null)
+        setEditProjectId('')
         setShowEditProjectModal(false)
     }
 
@@ -52,7 +53,7 @@ const Sidebar = ({ className }: Props) => {
                 </div>
             </Toolbar>
             <div className="project-list">
-                {projects.map(project => (
+                {projects.map((project: ProjectModel) => (
                     <div
                         key={project.id}
                         onClick={() => setActiveProjectId(project.id)}
@@ -71,10 +72,10 @@ const Sidebar = ({ className }: Props) => {
                             </div>
                         </div>
                         <div className="row">
-                            {project.updatedAt === null && (
+                            {!project.updatedAt && (
                                 <div className="project__created">Created {project.createdAt.toLocaleDateString()}</div>
                             )}
-                            {project.updatedAt !== null && (
+                            {project.updatedAt && (
                                 <div className="project__updated">Last modified {project.updatedAt.toLocaleDateString()}</div>
                             )}
                             <div className="spacer" />

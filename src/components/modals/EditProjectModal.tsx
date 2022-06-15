@@ -18,8 +18,8 @@ const EditProjectModal = ({ className, isOpen, onClose, projectId }: Props) => {
     const [name, setName] = useState(project?.name ?? '')
 
     useEffect(() => {
-        if (projectId === null) return
-        setName(project.name)
+        if (!projectId) return
+        setName(project?.name ?? '')
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [projectId])
 
@@ -28,8 +28,8 @@ const EditProjectModal = ({ className, isOpen, onClose, projectId }: Props) => {
     }
 
     const handleUpdateProject = () => {
-        const newProject = project.updateImmutable({ name })
-        if (newProject.isValid) {
+        const newProject = project?.updateImmutable({ name })
+        if (newProject?.isValid) {
             setProject(newProject)
             handleClose()
         }
@@ -55,7 +55,7 @@ const EditProjectModal = ({ className, isOpen, onClose, projectId }: Props) => {
                     <ModalButton $primary onClick={handleUpdateProject}>Apply changes</ModalButton>
                 </>
             )}
-            contentClassName={className}
+            contentClassName={className ?? ''}
         >
             <input type="text" placeholder="Project Title" value={name} onChange={e => setName(e.target.value)} />
         </Modal>

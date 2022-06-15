@@ -1,10 +1,12 @@
 import { useState, useLayoutEffect, useMemo } from 'react'
 
-export const useElementSize = (): [(ref: any) => void, {width: number, height: number}] => {
-    const [ref, setRef] = useState(null)
-    const [size, setSize] = useState({width: 0, height: 0})
+type Size = { width: number, height: number }
 
-    const handleObservedResize = useMemo(() => entries => {
+export const useElementSize = (): [React.Dispatch<React.SetStateAction<Element>>, Size] => {
+    const [ref, setRef] = useState<Element | null>(null)
+    const [size, setSize] = useState<Size>({ width: 0, height: 0 })
+
+    const handleObservedResize = useMemo(() => (entries: ResizeObserverEntry[]) => {
         const entry = entries[0]
         const { width, height } = entry.contentRect
         setSize({ width, height })
