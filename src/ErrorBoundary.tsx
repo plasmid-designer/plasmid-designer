@@ -8,7 +8,7 @@ type Props = {
 
 type State = {
     hasError: boolean,
-    error?: any,
+    error?: Error,
 }
 
 class ErrorBoundary extends React.Component<Props, State> {
@@ -25,7 +25,8 @@ class ErrorBoundary extends React.Component<Props, State> {
         return { hasError: true, error }
     }
 
-    componentDidCatch(_error: Error, _errorInfo: ErrorInfo) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    componentDidCatch(error: Error, errorInfo: ErrorInfo) {
         // TODO: Log error somehow
     }
 
