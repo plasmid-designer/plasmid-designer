@@ -14,7 +14,7 @@ type Props = {
 }
 
 const Editor = ({ className }: Props) => {
-    const editorRef = useRef(null)
+    const editorRef = useRef<HTMLDivElement>(null)
     const [renderCursor, setRenderCursor] = useState(false)
 
     const rendererName = useRecoilValue(editorRendererState)
@@ -35,7 +35,7 @@ const Editor = ({ className }: Props) => {
         editorRef.current?.focus()
     }, [])
 
-    const handleFocusChange = useCallback((showCursor, refocus = false) => () => {
+    const handleFocusChange = useCallback((showCursor: boolean, refocus = false) => () => {
         setRenderCursor(showCursor)
         if (refocus) { editorRef.current?.focus() }
     }, [])

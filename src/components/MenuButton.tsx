@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 
 type Props = {
@@ -11,8 +11,8 @@ const MenuButton = ({className, title, children}: Props) => {
     const ref = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
 
-    const handleClick = useCallback(e => {
-        if (e.target.parentElement !== ref.current) return
+    const handleClick = useCallback((e: React.MouseEvent) => {
+        if (e.currentTarget.parentElement !== ref.current) return
         setIsOpen(!isOpen)
     }, [isOpen])
 

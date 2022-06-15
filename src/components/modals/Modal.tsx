@@ -13,7 +13,7 @@ const customModalStyle = {
 
 type Props = {
     className?: string,
-    contentClassName: string,
+    contentClassName?: string,
     isOpen: boolean,
     onClose: () => void,
     title: string,

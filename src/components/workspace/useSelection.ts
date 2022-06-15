@@ -1,21 +1,23 @@
 import { useState, useCallback, useMemo } from 'react'
 
+type SelectionRange = { start: number, end: number }
+
 const useSelection = () => {
     const [isSelecting, setIsSelecting] = useState(false)
-    const [selection, setSelection] = useState({start: 0, end: 0})
+    const [selection, setSelection] = useState<SelectionRange>({ start: 0, end: 0 })
 
-    const startSelection = useCallback((start) => {
+    const startSelection = useCallback((start: number) => {
         if (start === selection.start) return
         setIsSelecting(true)
         setSelection({ start, end: start })
     }, [selection.start])
 
-    const updateSelection = useCallback((end) => {
+    const updateSelection = useCallback((end: number) => {
         if (!isSelecting || end === selection.end) return
         setSelection({ start: selection.start, end })
     }, [selection, isSelecting])
 
-    const endSelection = useCallback((end) => {
+    const endSelection = useCallback((end: number) => {
         if (!isSelecting) return
         setSelection({ start: selection.start, end })
         setIsSelecting(false)

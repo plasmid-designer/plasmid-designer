@@ -39,11 +39,13 @@ class ErrorBoundary extends React.Component<Props, State> {
                         Please report this on GitHub:<br/>
                         <a href="https://github.com/plasmid-designer/plasmid-designer/issues" target="_blank" rel="noreferrer">Report Issue</a>
                     </div>
-                    <div className='error'>
-                        <code>
-                            <pre>{this.state.error.stack}</pre>
-                        </code>
-                    </div>
+                    {this.state.error && (
+                        <div className='error'>
+                            <code>
+                                <pre>{this.state.error.stack}</pre>
+                            </code>
+                        </div>
+                    )}
                 </main>
             )
         }

@@ -45,8 +45,8 @@ type useEditorReturnTypes = {
     sequence: import('./SequenceDataModel').default,
     selection: import('./SequenceDataModel').SequenceDataSelectionModel,
     handlers: {
-        handleKeyDown: (e: KeyboardEvent) => void,
-        handleMouseEvent: (e: MouseEvent) => void,
+        handleKeyDown: (e: React.KeyboardEvent) => void,
+        handleMouseEvent: (e: React.MouseEvent) => void,
     }
 }
 

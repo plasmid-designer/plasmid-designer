@@ -2,8 +2,8 @@ import { useState, useLayoutEffect, useMemo } from 'react'
 
 type Size = { width: number, height: number }
 
-export const useElementSize = (): [React.Dispatch<React.SetStateAction<Element>>, Size] => {
-    const [ref, setRef] = useState<Element | null>(null)
+export const useElementSize = <E extends HTMLElement = HTMLDivElement>(): [(node: E  | null) => void, Size] => {
+    const [ref, setRef] = useState<E | null>(null)
     const [size, setSize] = useState<Size>({ width: 0, height: 0 })
 
     const handleObservedResize = useMemo(() => (entries: ResizeObserverEntry[]) => {
