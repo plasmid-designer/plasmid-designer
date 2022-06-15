@@ -1,7 +1,13 @@
 import { useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 
-const MenuButton = ({className, title, children}) => {
+type Props = {
+    className?: string,
+    title?: string,
+    children: React.ReactNode,
+}
+
+const MenuButton = ({className, title, children}: Props) => {
     const ref = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
 

@@ -1,6 +1,11 @@
 import styled from 'styled-components'
 
-const Toolbar = ({ className, children }) => {
+type Props = {
+    className?: string,
+    children: React.ReactNode
+}
+
+const Toolbar = ({ className, children }: Props) => {
     return (
         <div className={className}>
             {children}

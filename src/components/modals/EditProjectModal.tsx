@@ -6,7 +6,14 @@ import Modal from './Modal'
 import ModalButton from './ModalButton'
 import { projectSelector } from '../../state/selectors'
 
-const EditProjectModal = ({ className, isOpen, onClose, projectId }) => {
+type Props = {
+    className?: string,
+    isOpen: boolean,
+    onClose: () => void,
+    projectId: string,
+}
+
+const EditProjectModal = ({ className, isOpen, onClose, projectId }: Props) => {
     const [project, setProject] = useRecoilState(projectSelector(projectId))
     const [name, setName] = useState(project?.name ?? '')
 

@@ -2,7 +2,11 @@ import styled from 'styled-components'
 
 import logo from "./logo_header_dark.png"
 
-const Header = ({ className }) => {
+type Props = {
+    className?: string,
+}
+
+const Header = ({ className }: Props) => {
     return (
         <header className={className}>
             <div>

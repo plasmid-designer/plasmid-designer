@@ -27,17 +27,25 @@ const Theme = {
     },
 }
 
-const fg = (props, sym) => {
+const fg = (props: Props, sym?: string) => {
     const key = props.$primary ? 'primary' : props.$destructive ? 'destructive' : 'default'
     return Theme[key].fg?.[sym ?? 'default'] ?? Theme[key].fg
 }
 
-const bg = (props, sym) => {
+const bg = (props: Props, sym?: string) => {
     const key = props.$primary ? 'primary' : props.$destructive ? 'destructive' : 'default'
     return Theme[key].bg?.[sym ?? 'default'] ?? Theme[key].bg
 }
 
-const ModalButton = ({ className, children, ...props }) => {
+type Props = {
+    className?: string,
+    children: React.ReactNode,
+    $primary?: boolean,
+    $destructive?: boolean,
+    onClick?: (MouseEvent) => void,
+}
+
+const ModalButton = ({ className, children, ...props }: Props) => {
     return (
         <div className={className} {...props}>
             {children}

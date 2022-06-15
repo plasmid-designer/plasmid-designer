@@ -7,7 +7,13 @@ import ModalButton from './ModalButton'
 import { activeProjectIdState, projectsState } from '../../state/atoms'
 import ProjectModel from '../models/ProjectModel'
 
-const NewProjectModal = ({ className, isOpen, onClose }) => {
+type Props = {
+    className?: string,
+    isOpen: boolean,
+    onClose: () => void,
+}
+
+const NewProjectModal = ({ className, isOpen, onClose }: Props) => {
     const setProjects = useSetRecoilState(projectsState)
     const setActiveProjectId = useSetRecoilState(activeProjectIdState)
 

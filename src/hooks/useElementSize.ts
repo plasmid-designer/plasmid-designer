@@ -1,6 +1,6 @@
 import { useState, useLayoutEffect, useMemo } from 'react'
 
-export const useElementSize = () => {
+export const useElementSize = (): [(ref: any) => void, {width: number, height: number}] => {
     const [ref, setRef] = useState(null)
     const [size, setSize] = useState({width: 0, height: 0})
 

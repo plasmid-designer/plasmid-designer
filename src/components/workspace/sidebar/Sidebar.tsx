@@ -1,7 +1,7 @@
 import { FilePlus, Edit } from 'react-feather'
 import { useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import styled from 'styled-components'
+import styled, { StyledProps } from 'styled-components'
 
 import { activeProjectIdState } from '../../../state/atoms'
 import { projectListSelector } from '../../../state/selectors'
@@ -9,7 +9,11 @@ import NewProjectModal from '../../modals/NewProjectModal'
 import Toolbar from '../Toolbar'
 import EditProjectModal from '../../modals/EditProjectModal'
 
-const Sidebar = ({ className }) => {
+type Props = {
+    className?: string,
+}
+
+const Sidebar = ({ className }: Props) => {
     const projects = useRecoilValue(projectListSelector)
     const [activeProjectId, setActiveProjectId] = useRecoilState(activeProjectIdState)
 

@@ -7,7 +7,12 @@ import Modal from 'react-modal'
 import Header from './components/header/Header'
 import Workspace from './components/workspace/Workspace'
 
-class ErrorBoundary extends React.Component {
+type ErrorState = {
+    hasError: boolean,
+    error?: any,
+}
+
+class ErrorBoundary extends React.Component<any, ErrorState> {
     constructor(props) {
         super(props)
         this.state = { hasError: false }
@@ -66,7 +71,11 @@ const StyledErrorBoundary = styled(ErrorBoundary)`
     }
 `
 
-const App = ({ className }) => {
+type Props = {
+    className?: string,
+}
+
+const App = ({ className }: Props) => {
     useLayoutEffect(() => {
         Modal.setAppElement('#root')
     }, [])
