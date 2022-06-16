@@ -1,9 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { GeistProvider, CssBaseline } from '@geist-ui/core'
 
 import 'modern-css-reset/dist/reset.min.css'
-import './index.css'
 import 'allotment/dist/style.css'
+import 'inter-ui/inter.css'
+
+import './index.css'
 
 import App from './App'
 import reportWebVitals from './reportWebVitals'
@@ -11,7 +14,10 @@ import reportWebVitals from './reportWebVitals'
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
-    <App />
+    <GeistProvider>
+        <CssBaseline />
+        <App />
+    </GeistProvider>
   </React.StrictMode>
 );
 

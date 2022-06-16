@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@geist-ui/core": "^2.3.8",
     "@rehooks/component-size": "^1.0.3",
     "@tauri-apps/api": "^1.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -19,6 +20,7 @@
     "@yapv/core": "^0.2.2",
     "@yapv/svg": "^0.2.2",
     "allotment": "^1.13.0",
+    "inter-ui": "^3.19.3",
     "lodash": "^4.17.21",
     "modern-css-reset": "^1.4.0",
     "open-vector-editor": "^17.4.6",

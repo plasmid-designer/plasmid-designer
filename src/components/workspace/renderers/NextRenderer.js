@@ -319,7 +319,8 @@ export default styled(NextRenderer)`
     align-items: flex-start;
     justify-content: flex-start;
     flex-flow: row wrap;
-    font-family: monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
     font-size: 14pt;
     cursor: text;
     width: 100%;
