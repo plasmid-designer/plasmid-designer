@@ -7,10 +7,9 @@ const useSelection = () => {
     const [selection, setSelection] = useState<SelectionRange>({ start: 0, end: 0 })
 
     const startSelection = useCallback((start: number) => {
-        if (start === selection.start) return
         setIsSelecting(true)
         setSelection({ start, end: start })
-    }, [selection.start])
+    }, [])
 
     const updateSelection = useCallback((end: number) => {
         if (!isSelecting || end === selection.end) return
