@@ -19,6 +19,26 @@ Plasmid Designer is a __free and open source__ tool for DNA editing and plasmid 
 
 The primary goal of Plasmid Designer is to be beginner friendly and provide a great out-of-the-box experience. Even though the focus is on beginners, we're planning to add many features that experts will love, such as GenBank® integration and support for various industry-standard file formats.
 
+## Development
+
+Plasmid-Designer needs stable rust, node and yarn to work.
+
+### Prerequisites
+
+```bash
+# use stable rust for this directory
+rustup override set stable
+
+# install dependencies and dev-dependencies
+yarn --production=false
+```
+
+### Debugging
+
+```bash
+yarn tauri dev
+```
+
 ## Screenshots
 
 ![](./screenshots/v0_3_0__editor.png)
