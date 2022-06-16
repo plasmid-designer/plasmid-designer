@@ -1,35 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { invoke } from '@tauri-apps/api/tauri'
 import { useRecoilState } from 'recoil'
 
+import Bridge from '../../Bridge'
 import { activeProjectSelector } from '../../state/selectors'
 
 import SequenceDataModel, { SequenceDataCursorModel, SequenceDataSelectionModel } from './SequenceDataModel'
 import useSelection from './useSelection'
-
-const Bridge = {
-    calculateSequenceData: (force: boolean) => invoke('calculate_sequence_data', { force }),
-    insert: (letter: string) => invoke('sequence_insert', { letter }),
-    insertAll: (text: string) => invoke('sequence_insert_all', { text }),
-    delete: () => invoke('sequence_delete'),
-    deleteNext: () => invoke('sequence_delete_next'),
-    moveCursorTo: (index: number) => invoke('move_cursor', { index }),
-    moveCursorLeft: () => invoke('move_cursor_left'),
-    moveCursorRight: () => invoke('move_cursor_right'),
-    moveCursorToCodonStart: () => invoke('move_cursor_to_codon_start'),
-    moveCursorToCodonEnd: () => invoke('move_cursor_to_codon_end'),
-    moveCursorToStart: () => invoke('move_cursor_to_start'),
-    moveCursorToEnd: () => invoke('move_cursor_to_end'),
-    setSelection: (start: number, end: number) => invoke('set_selection', { start, end }),
-    selectAll: () => invoke('set_selection_all'),
-    resetSelection: () => invoke('reset_selection'),
-    expandSelectionLeft: () => invoke('expand_selection_left'),
-    expandSelectionRight: () => invoke('expand_selection_right'),
-    getSelectedSequence: () => invoke('get_selected_sequence') as Promise<string>,
-    undo: () => invoke('undo'),
-    redo: () => invoke('redo'),
-    initializeEditor: (sequence: string) => invoke('initialize_editor', { sequence }),
-}
 
 const iupacChars = "ACGTWSMKRYBVDHN-"
 
@@ -41,9 +17,9 @@ const findIndex = (currentTarget: HTMLElement) => {
 
 type useEditorReturnTypes = {
     isLoading: boolean,
-    cursor: import('./SequenceDataModel').SequenceDataCursorModel,
-    sequence: import('./SequenceDataModel').default,
-    selection: import('./SequenceDataModel').SequenceDataSelectionModel,
+    cursor: SequenceDataCursorModel,
+    sequence: SequenceDataModel,
+    selection: SequenceDataSelectionModel,
     handlers: {
         handleKeyDown: (e: React.KeyboardEvent) => void,
         handleMouseEvent: (e: React.MouseEvent) => void,
@@ -69,7 +45,7 @@ const useEditor = (): useEditorReturnTypes => {
     useEffect(() => {
         const initialize = async () => {
             setIsLoading(true)
-            await Bridge.initializeEditor(activeProject?.sequence ?? '')
+            await Bridge.Editor.initializeEditor(activeProject?.sequence ?? '')
             await updateSequence(true)
             setIsLoading(false)
         }
@@ -87,9 +63,9 @@ const useEditor = (): useEditorReturnTypes => {
             if (selection.start === 0 && selection.end === 0) {
                 return
             } else if (selection.start === selection.end) {
-                await Bridge.resetSelection()
+                await Bridge.Editor.resetSelection()
             } else {
-                await Bridge.setSelection(selection.start, selection.end)
+                await Bridge.Editor.setSelection(selection.start, selection.end)
             }
             await updateSequence()
         }
@@ -109,46 +85,46 @@ const useEditor = (): useEditorReturnTypes => {
 
         switch (e.code) {
             case 'Backspace':
-                await Bridge.delete()
+                await Bridge.Editor.delete()
                 break
             case 'Delete':
-                await Bridge.deleteNext()
+                await Bridge.Editor.deleteNext()
                 break
             case 'ArrowLeft':
-                if (ctrl) await Bridge.moveCursorToCodonStart()
-                else if (shift) await Bridge.expandSelectionLeft()
-                else await Bridge.moveCursorLeft()
+                if (ctrl) await Bridge.Editor.moveCursorToCodonStart()
+                else if (shift) await Bridge.Editor.expandSelectionLeft()
+                else await Bridge.Editor.moveCursorLeft()
                 break
             case 'ArrowRight':
-                if (ctrl) await Bridge.moveCursorToCodonEnd()
-                else if (shift) await Bridge.expandSelectionRight()
-                else await Bridge.moveCursorRight()
+                if (ctrl) await Bridge.Editor.moveCursorToCodonEnd()
+                else if (shift) await Bridge.Editor.expandSelectionRight()
+                else await Bridge.Editor.moveCursorRight()
                 break
             default:
                 if (ctrl) {
                     let should_return = true
                     switch (upperKey) {
                         case 'C':
-                            await navigator.clipboard.writeText(await Bridge.getSelectedSequence())
+                            await navigator.clipboard.writeText(await Bridge.Editor.getSelectedSequence())
                             break
                         case 'V':
                             await (async () => {
                                 const text = await navigator.clipboard.readText()
-                                await Bridge.insertAll(text)
+                                await Bridge.Editor.insertAll(text)
                             })()
                             break
                         case 'A':
-                            await Bridge.selectAll()
+                            await Bridge.Editor.selectAll()
                             break
                         case 'X':
-                            await navigator.clipboard.writeText(await Bridge.getSelectedSequence())
-                            await Bridge.delete()
+                            await navigator.clipboard.writeText(await Bridge.Editor.getSelectedSequence())
+                            await Bridge.Editor.delete()
                             break
                         case 'Z':
-                            await Bridge.undo()
+                            await Bridge.Editor.undo()
                             break
                         case 'Y':
-                            await Bridge.redo()
+                            await Bridge.Editor.redo()
                             break
                         default:
                             should_return = false
@@ -157,7 +133,7 @@ const useEditor = (): useEditorReturnTypes => {
                     if (should_return) return true
                 }
                 if (iupacChars.includes(upperKey)) {
-                    await Bridge.insert(upperKey)
+                    await Bridge.Editor.insert(upperKey)
                 }
                 return true
         }
@@ -175,9 +151,9 @@ const useEditor = (): useEditorReturnTypes => {
             case 'mousedown':
                 if (index !== null) {
                     startSelection(index)
-                    await Bridge.moveCursorTo(index)
+                    await Bridge.Editor.moveCursorTo(index)
                 } else {
-                    await Bridge.moveCursorToEnd()
+                    await Bridge.Editor.moveCursorToEnd()
                 }
                 return true
             case 'mousemove':
@@ -194,13 +170,7 @@ const useEditor = (): useEditorReturnTypes => {
     }, [isSelecting, startSelection, updateSelection, endSelection, selection])
 
     const updateSequence = async (force = false) => {
-        // TODO: Fix type annotations!
-        type BridgeCalculateSequenceDataType = {
-            selection: Record<string, unknown>,
-            cursor: Record<string, unknown>,
-            sequence?: Record<string, unknown>
-        }
-        const data = await Bridge.calculateSequenceData(force) as BridgeCalculateSequenceDataType
+        const data = await Bridge.Editor.calculateSequenceData(force)
         if (data.sequence) {
             setSequenceModel(new SequenceDataModel(data))
         }

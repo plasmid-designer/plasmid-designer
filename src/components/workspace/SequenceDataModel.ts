@@ -1,5 +1,11 @@
+import { EditorCursorData, EditorSelectionData, EditorSequenceData, EditorSequenceItem } from "../../Bridge"
+
 class Range {
-    constructor(start, end) {
+    start: number
+    end: number
+    length: number
+
+    constructor(start: number, end: number) {
         this.start = start
         this.end = end
         this.length = end - start
@@ -7,22 +13,28 @@ class Range {
 }
 
 export class SequenceDataSelectionModel {
-    constructor(data) {
+    _data: EditorSelectionData | undefined
+    start: number | undefined
+    end: number | undefined
+    length: number
+    isActive: boolean
+
+    constructor(data?: EditorSelectionData) {
         this._data = data
 
         this.start = this._data?.start
         this.end = this._data?.end
-        this.length = Math.max(0, this.end ?? 0 - this.start ?? 0)
+        this.length = Math.max(0, (this.end ?? 0) - (this.start ?? 0))
         this.isActive = data !== undefined && data !== null
     }
 
-    contains(index) {
+    contains(index: number) {
         if (!this.isActive) return false
-        return index >= this.start && index < this.end
+        return index >= (this.start ?? 0) && index < (this.end ?? 0)
     }
 
-    overlapCount(index, nucleotideCount) {
-        if (!this.isActive) return 0
+    overlapCount(index: number, nucleotideCount: number) {
+        if (!this.isActive || !this.start || !this.end) return 0
         if (this.start > index + nucleotideCount) return 0
         const selectionRange = new Range(this.start, this.end)
         const codonRange = new Range(index, index + nucleotideCount)
@@ -35,24 +47,20 @@ export class SequenceDataSelectionModel {
 }
 
 export class SequenceDataCursorModel {
-    constructor(data) {
+    _data: EditorCursorData
+    cursorPosition: number
+
+    constructor(data?: EditorCursorData) {
         this._data = data ?? { position: 0, is_at_end: true }
 
         this.cursorPosition = this._data.position
     }
 
-    /**
-     * @returns {boolean}
-     */
     isCursorAtEnd() {
         return this._data.is_at_end
     }
 
-    /**
-     * @param {SequenceDataItemModel} item
-     * @returns {boolean}
-     */
-     isItemSelected(item) {
+    isItemSelected(item: SequenceDataItemModel) {
         const cursorPos = this.cursorPosition
         const startIndex = item.startIndex
         return cursorPos >= startIndex && cursorPos < startIndex + item.codonLetters.length
@@ -60,7 +68,9 @@ export class SequenceDataCursorModel {
 }
 
 export class SequenceDataItemModel {
-    constructor(item) {
+    data: EditorSequenceItem
+
+    constructor(item: EditorSequenceItem) {
         this.data = item
     }
 
@@ -94,14 +104,18 @@ export class SequenceDataItemModel {
 }
 
 export default class SequenceDataModel {
-    constructor(data) {
+    _data: { sequence: EditorSequenceItem[], bp_count: number }
+    _items: SequenceDataItemModel[]
+    _selection: SequenceDataSelectionModel
+
+    constructor(data?: EditorSequenceData) {
         const patchedData = {
             sequence: data?.sequence ?? [],
             bp_count: data?.bp_count ?? 0,
         }
         this._data = patchedData
         this._items = this._data.sequence.map(item => new SequenceDataItemModel(item))
-        this._selection = new SequenceDataSelectionModel(this._data.selection)
+        this._selection = new SequenceDataSelectionModel(data?.selection)
     }
 
     /**
