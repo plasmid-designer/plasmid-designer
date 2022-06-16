@@ -1,4 +1,5 @@
 import { atom } from 'recoil'
+import ProjectModel from '../components/models/ProjectModel'
 import { persistLocalEffect } from './persist'
 
 export const editorHintState = atom({
@@ -18,7 +19,7 @@ export const editorRendererState = atom({
     effects: [persistLocalEffect('preferredRenderer')],
 })
 
-export const projectsState = atom({
+export const projectsState = atom<Record<string, ProjectModel>>({
     key: 'projectsState',
     default: {},
     effects: [persistLocalEffect('projects')],

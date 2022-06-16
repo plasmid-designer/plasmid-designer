@@ -3,10 +3,14 @@ import { selector, selectorFamily } from 'recoil'
 import { projectsState, activeProjectIdState } from './atoms'
 import ProjectModel from '../components/models/ProjectModel'
 
-export const projectListSelector = selector({
+export const projectListSelector = selector<ProjectModel[]>({
     key: 'projectListSelector',
     get: ({ get }) => {
-        return Object.values(get(projectsState)).map(jsonProject => ProjectModel.fromJSON(jsonProject as { $v: number }))
+        const state = get(projectsState)
+        const models = Object.values(state)
+            .map(jsonProject => ProjectModel.fromJSON(jsonProject as { $v: number }))
+            .filter(Boolean)
+        return models as ProjectModel[]
     }
 })
 
@@ -30,7 +34,7 @@ export const projectSelector = selectorFamily({
     get: (projectId: string) => ({ get }) => {
         return get(projectListSelector).find(project => project.id === projectId)
     },
-    set: (projectId: string) => ({ set }, newValue: ProjectModel) => {
+    set: (projectId: string) => ({ set }, newValue: ProjectModel | null) => {
         if (newValue === null) {
             set(projectsState, state => {
                 const copy = window.structuredClone(state)
