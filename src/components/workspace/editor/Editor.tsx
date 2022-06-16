@@ -9,8 +9,12 @@ import EditorToolbar from './EditorToolbar'
 import { activeProjectIdState, editorRendererState } from '../../../state/atoms'
 import { rendererList, NextRenderer } from '../renderers'
 
-const Editor = ({ className }) => {
-    const editorRef = useRef()
+type Props = {
+    className?: string,
+}
+
+const Editor = ({ className }: Props) => {
+    const editorRef = useRef<HTMLDivElement>(null)
     const [renderCursor, setRenderCursor] = useState(false)
 
     const rendererName = useRecoilValue(editorRendererState)
@@ -31,7 +35,7 @@ const Editor = ({ className }) => {
         editorRef.current?.focus()
     }, [])
 
-    const handleFocusChange = useCallback((showCursor, refocus = false) => () => {
+    const handleFocusChange = useCallback((showCursor: boolean, refocus = false) => () => {
         setRenderCursor(showCursor)
         if (refocus) { editorRef.current?.focus() }
     }, [])

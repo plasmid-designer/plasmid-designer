@@ -1,6 +1,11 @@
 import styled from 'styled-components'
 
-const Button = ({ className, children, ...props }) => {
+type Props = {
+    className?: string,
+    children: React.ReactNode,
+}
+
+const Button = ({ className, children, ...props }: Props) => {
     return (
         <div className={className} {...props}>
             {children}

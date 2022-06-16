@@ -8,7 +8,11 @@ import Sidebar from './sidebar/Sidebar'
 
 setSashSize(20)
 
-const Workspace = ({className}) => {
+type Props = {
+    className?: string,
+}
+
+const Workspace = ({ className }: Props) => {
     return (
         <div className={className}>
             <Allotment proportionalLayout vertical={false}>

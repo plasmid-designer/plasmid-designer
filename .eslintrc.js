@@ -1,4 +1,6 @@
 module.exports = {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
     "env": {
         "browser": true,
         "es2021": true,
@@ -11,6 +13,7 @@ module.exports = {
     },
     "extends": [
         "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
         "plugin:jest/recommended"
@@ -23,6 +26,7 @@ module.exports = {
         "sourceType": "module"
     },
     "plugins": [
+        "@typescript-eslint",
         "react",
         "react-hooks",
         "jest"

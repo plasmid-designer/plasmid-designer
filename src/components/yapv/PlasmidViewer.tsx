@@ -5,8 +5,9 @@ import YAPV from '@yapv/core'
 import SVG from '@yapv/svg'
 import { activeProjectSelector } from '../../state/selectors'
 import { useElementSize } from '../../hooks/useElementSize'
+import { VectorMap } from '@yapv/core/lib/models/types'
 
-const getNucleotideColor = nucleotide => {
+const getNucleotideColor = (nucleotide: string) => {
     switch (nucleotide.toUpperCase()) {
         case 'A': return 'hsl(0,75%,60%)';
         case 'T': return 'hsl(50,85%,60%)';
@@ -16,14 +17,19 @@ const getNucleotideColor = nucleotide => {
     }
 }
 
-const PlasmidViewer = ({ className, name = "Foo" }) => {
-    const ref = useRef(null)
+type Props = {
+    className?: string,
+    name?: string,
+}
+
+const PlasmidViewer = ({ className, name = "Foo" }: Props) => {
+    const ref = useRef<HTMLDivElement>(null)
     const activeProject = useRecoilValue(activeProjectSelector)
     const sequence = useMemo(() => {
         if (!activeProject?.id) { return [] }
         return [...activeProject.sequence]
     }, [activeProject?.id, activeProject?.sequence])
-    const [parentRef, size] = useElementSize()
+    const [parentRef, size] = useElementSize<HTMLDivElement>()
 
     const markers = useMemo(() => {
         return sequence.map((nucleotide, i) => {
@@ -118,7 +124,7 @@ const PlasmidViewer = ({ className, name = "Foo" }) => {
 
     useEffect(() => {
         if (
-            ref.current === null
+            !ref.current
             || size.width === 0
             || size.height === 0
         ) return
@@ -126,7 +132,7 @@ const PlasmidViewer = ({ className, name = "Foo" }) => {
         const el = document.createElement('div')
         const renderer = YAPV.create(el)
         renderer.use(SVG.circular)
-        renderer.draw(sequenceConfig)
+        renderer.draw(sequenceConfig as VectorMap)
         ref.current.replaceChildren(el)
     }, [size, sequence, sequenceConfig])
 

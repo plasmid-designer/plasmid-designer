@@ -86,7 +86,7 @@ const Icon = () => (
             <tspan
                 x="69.004"
                 y="68.414"
-                style={{ WebkitTextAlign: "center", textAlign: "center" }}
+                style={{ textAlign: "center" }}
                 strokeWidth="0.265"
                 textAnchor="middle"
             >

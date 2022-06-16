@@ -7,7 +7,11 @@ import { rendererList } from '../renderers'
 import MenuButton from '../../MenuButton'
 import Toolbar from '../Toolbar'
 
-const EditorToolbar = ({ className }) => {
+type Props = {
+    className?: string,
+}
+
+const EditorToolbar = ({ className }: Props) => {
     const [editorHints, setEditorHints] = useRecoilState(editorHintState)
     const [renderer, setRenderer] = useRecoilState(editorRendererState)
 

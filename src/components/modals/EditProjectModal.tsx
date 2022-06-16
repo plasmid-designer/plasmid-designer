@@ -6,13 +6,20 @@ import Modal from './Modal'
 import ModalButton from './ModalButton'
 import { projectSelector } from '../../state/selectors'
 
-const EditProjectModal = ({ className, isOpen, onClose, projectId }) => {
+type Props = {
+    className?: string,
+    isOpen: boolean,
+    onClose: () => void,
+    projectId: string,
+}
+
+const EditProjectModal = ({ className, isOpen, onClose, projectId }: Props) => {
     const [project, setProject] = useRecoilState(projectSelector(projectId))
     const [name, setName] = useState(project?.name ?? '')
 
     useEffect(() => {
-        if (projectId === null) return
-        setName(project.name)
+        if (!projectId) return
+        setName(project?.name ?? '')
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [projectId])
 
@@ -21,8 +28,8 @@ const EditProjectModal = ({ className, isOpen, onClose, projectId }) => {
     }
 
     const handleUpdateProject = () => {
-        const newProject = project.updateImmutable({ name })
-        if (newProject.isValid) {
+        const newProject = project?.updateImmutable({ name })
+        if (newProject?.isValid) {
             setProject(newProject)
             handleClose()
         }
@@ -39,7 +46,7 @@ const EditProjectModal = ({ className, isOpen, onClose, projectId }) => {
         <Modal
             isOpen={isOpen}
             onClose={handleClose}
-            title={`Edit ${project?.name}`}
+            title={`Edit ${project?.name ?? ''}`}
             footer={(
                 <>
                     <ModalButton onClick={handleClose}>Cancel</ModalButton>
@@ -48,7 +55,7 @@ const EditProjectModal = ({ className, isOpen, onClose, projectId }) => {
                     <ModalButton $primary onClick={handleUpdateProject}>Apply changes</ModalButton>
                 </>
             )}
-            contentClassName={className}
+            contentClassName={className ?? ''}
         >
             <input type="text" placeholder="Project Title" value={name} onChange={e => setName(e.target.value)} />
         </Modal>

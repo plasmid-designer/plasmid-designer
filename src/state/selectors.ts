@@ -1,11 +1,16 @@
 import { selector, selectorFamily } from 'recoil'
-import ProjectModel from '../components/models/ProjectModel'
-import { projectsState, activeProjectIdState } from './atoms'
 
-export const projectListSelector = selector({
+import { projectsState, activeProjectIdState } from './atoms'
+import ProjectModel from '../components/models/ProjectModel'
+
+export const projectListSelector = selector<ProjectModel[]>({
     key: 'projectListSelector',
     get: ({ get }) => {
-        return Object.values(get(projectsState)).map(jsonProject => ProjectModel.fromJSON(jsonProject))
+        const state = get(projectsState)
+        const models = Object.values(state)
+            .map(jsonProject => ProjectModel.fromJSON(jsonProject as { $v: number }))
+            .filter(Boolean)
+        return models as ProjectModel[]
     }
 })
 
@@ -16,7 +21,7 @@ export const activeProjectSelector = selector({
         const projects = get(projectsState)
         return activeProjectId ? ProjectModel.fromJSON(projects[activeProjectId]) : null
     },
-    set: ({ set }, newValue) => {
+    set: ({ set }, newValue: ProjectModel) => {
         const activeProjectId = newValue?.id
         if (!activeProjectId || !newValue.isValid) return
         newValue.updatedAt = new Date()
@@ -26,10 +31,10 @@ export const activeProjectSelector = selector({
 
 export const projectSelector = selectorFamily({
     key: 'projectSelector',
-    get: projectId => ({ get }) => {
-        return get(projectListSelector).find(project => project.id === projectId)
+    get: (projectId: string) => ({ get }) => {
+        return get(projectListSelector).find(project => project.id === projectId) ?? null
     },
-    set: projectId => ({ set }, newValue) => {
+    set: (projectId: string) => ({ set }, newValue: ProjectModel | null) => {
         if (newValue === null) {
             set(projectsState, state => {
                 const copy = window.structuredClone(state)

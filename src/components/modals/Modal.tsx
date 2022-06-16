@@ -11,7 +11,17 @@ const customModalStyle = {
     }
 }
 
-const Modal = ({ className, contentClassName, isOpen, onClose, title, children, footer }) => {
+type Props = {
+    className?: string,
+    contentClassName?: string,
+    isOpen: boolean,
+    onClose: () => void,
+    title: string,
+    children: React.ReactNode,
+    footer: React.ReactNode,
+}
+
+const Modal = ({ className, contentClassName, isOpen, onClose, title, children, footer }: Props) => {
     return (
         <ReactModal
             isOpen={isOpen}

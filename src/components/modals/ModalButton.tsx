@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-const Theme = {
+const Theme: ThemeTree = {
     primary: {
         bg: {
             default: 'hsl(209,75%,45%)',
@@ -27,17 +27,37 @@ const Theme = {
     },
 }
 
-const fg = (props, sym) => {
-    const key = props.$primary ? 'primary' : props.$destructive ? 'destructive' : 'default'
-    return Theme[key].fg?.[sym ?? 'default'] ?? Theme[key].fg
+type ThemeTreeEntryFull = {
+    default: string,
+    hover: string,
+    focus: string,
 }
 
-const bg = (props, sym) => {
+type ThemeTreeEntry = string | ThemeTreeEntryFull
+
+type ThemeTree = Record<string, { bg: ThemeTreeEntry, fg: ThemeTreeEntry }>
+
+const fg = (props: Props, sym?: keyof ThemeTreeEntryFull) => {
     const key = props.$primary ? 'primary' : props.$destructive ? 'destructive' : 'default'
-    return Theme[key].bg?.[sym ?? 'default'] ?? Theme[key].bg
+    const tree = Theme[key].fg
+    return tree instanceof Object ? tree[sym ?? 'default'] : tree
 }
 
-const ModalButton = ({ className, children, ...props }) => {
+const bg = (props: Props, sym?: keyof ThemeTreeEntryFull) => {
+    const key = props.$primary ? 'primary' : props.$destructive ? 'destructive' : 'default'
+    const tree = Theme[key].bg
+    return tree instanceof Object ? tree[sym ?? 'default'] : tree
+}
+
+type Props = {
+    className?: string,
+    children: React.ReactNode,
+    $primary?: boolean,
+    $destructive?: boolean,
+    onClick?: (e: React.MouseEvent) => void,
+}
+
+const ModalButton = ({ className, children, ...props }: Props) => {
     return (
         <div className={className} {...props}>
             {children}
