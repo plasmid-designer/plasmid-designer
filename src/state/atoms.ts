@@ -13,7 +13,7 @@ export const editorHintState = atom({
     effects: [persistLocalEffect('editorHints')],
 })
 
-export const editorRendererState = atom({
+export const editorRendererState = atom<string>({
     key: 'editorRendererState',
     default: 'next',
     effects: [persistLocalEffect('preferredRenderer')],
