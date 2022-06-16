@@ -169,7 +169,7 @@ const useEditor = (): useEditorReturnTypes => {
         e.preventDefault()
         e.stopPropagation()
 
-        const index = findIndex(e.currentTarget)
+        const index = findIndex(e.target as HTMLElement)
 
         switch (e.type) {
             case 'mousedown':

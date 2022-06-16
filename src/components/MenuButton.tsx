@@ -12,7 +12,7 @@ const MenuButton = ({className, title, children}: Props) => {
     const [isOpen, setIsOpen] = useState(false)
 
     const handleClick = useCallback((e: React.MouseEvent) => {
-        if (e.currentTarget.parentElement !== ref.current) return
+        if ((e.target as HTMLElement)?.parentElement !== ref.current) return
         setIsOpen(!isOpen)
     }, [isOpen])
 
