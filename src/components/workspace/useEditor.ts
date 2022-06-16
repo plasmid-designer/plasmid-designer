@@ -208,8 +208,8 @@ const useEditor = (): useEditorReturnTypes => {
         setSelectionModel(new SequenceDataSelectionModel(data?.selection))
     }
 
-    type RelayAsyncFn<T> = (...data: unknown[]) => Promise<T>
-    const wrapUpdatingAsync = (fn: RelayAsyncFn<boolean>) => async (...data: unknown[]) => {
+    type RelayAsyncFn<T, R> = (...data: T[]) => Promise<R>
+    const wrapUpdatingAsync = <T>(fn: RelayAsyncFn<T, boolean>) => async (...data: T[]) => {
         if (await fn(...data)) {
             await updateSequence()
         }

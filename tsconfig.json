@@ -12,6 +12,7 @@
         "allowSyntheticDefaultImports": true,
         "strict": false,
         "strictNullChecks": true,
+        "strictBindCallApply": true,
         "noImplicitAny": true,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,

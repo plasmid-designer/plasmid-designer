@@ -32,7 +32,7 @@ export const activeProjectSelector = selector({
 export const projectSelector = selectorFamily({
     key: 'projectSelector',
     get: (projectId: string) => ({ get }) => {
-        return get(projectListSelector).find(project => project.id === projectId)
+        return get(projectListSelector).find(project => project.id === projectId) ?? null
     },
     set: (projectId: string) => ({ set }, newValue: ProjectModel | null) => {
         if (newValue === null) {

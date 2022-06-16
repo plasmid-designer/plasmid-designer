@@ -46,7 +46,7 @@ const EditProjectModal = ({ className, isOpen, onClose, projectId }: Props) => {
         <Modal
             isOpen={isOpen}
             onClose={handleClose}
-            title={`Edit ${project?.name}`}
+            title={`Edit ${project?.name ?? ''}`}
             footer={(
                 <>
                     <ModalButton onClick={handleClose}>Cancel</ModalButton>
