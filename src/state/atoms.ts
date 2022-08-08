@@ -30,3 +30,24 @@ export const activeProjectIdState = atom<string | null>({
     default: null,
     effects: [persistLocalEffect('activeProjectId')],
 })
+
+export type SIDEBAR_VIEW = 'project' | 'search'
+
+export const sidebarViewState = atom<SIDEBAR_VIEW>({
+    key: 'sidebarViewState',
+    default: 'project',
+})
+
+export type TFileNode = {
+    name: string,
+    path: string,
+    type: 'directory' | 'file',
+    files?: TFileNode[],
+}
+
+export type TFileTree = TFileNode[]
+
+export const currentProjectTreeState = atom<TFileTree | null>({
+    key: 'currentProjectTreeState',
+    default: null,
+})

@@ -1,6 +1,5 @@
 import styled from 'styled-components'
-
-import logo from "./logo_header_dark.png"
+import Icon from './Icon'
 
 type Props = {
     className?: string,
@@ -9,8 +8,11 @@ type Props = {
 const Header = ({ className }: Props) => {
     return (
         <header className={className}>
-            <div>
-                <img alt="Plasmid Logo" src={logo} />
+            <div className="content">
+                <div className="icon">
+                    <Icon />
+                </div>
+                Plasmid Designer
             </div>
         </header>
     )
@@ -20,15 +22,31 @@ export default styled(Header)`
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 1rem 2rem;
-    background: hsl(0,0%,10%);
+    background: hsl(0,0%,95%);
     user-select: none;
+    padding-top: .75rem;
+    height: calc(2rem + .75rem);
 
     & img {
         object-fit: scale-down;
     }
 
-    & .right {
-        margin-left: auto;
+    & .content {
+        display: flex;
+        align-items: center;
+        height: 24px;
+
+        & .icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 24px;
+            width: calc(24px + 1.5rem);
+
+            & > svg {
+                width: 24px;
+                height: 24px;
+            }
+        }
     }
 `

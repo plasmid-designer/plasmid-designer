@@ -16,7 +16,7 @@ const Workspace = ({ className }: Props) => {
     return (
         <div className={className}>
             <Allotment proportionalLayout vertical={false}>
-                <Allotment.Pane minSize={250} preferredSize={250} maxSize={250}>
+                <Allotment.Pane snap minSize={250} preferredSize={250}>
                     <Sidebar />
                 </Allotment.Pane>
                 <Allotment.Pane minSize={300}>

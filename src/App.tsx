@@ -21,7 +21,6 @@ const App = ({ className }: Props) => {
         <ErrorBoundary>
             <RecoilRoot>
                 <div className={className}>
-                    <Header />
                     <Workspace />
                 </div>
             </RecoilRoot>

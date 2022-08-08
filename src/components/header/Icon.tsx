@@ -56,44 +56,6 @@ const Icon = () => (
             strokeWidth="5.292"
             d="M67.642 131.814c-36.545-.7-56.246-28.9-59.675-41.437"
         ></path>
-        <g
-            fill="#000"
-            fillOpacity="1"
-            stroke="none"
-            fontFamily="sans-serif"
-            fontStyle="normal"
-            fontWeight="normal"
-            transform="matrix(.89796 0 0 .89796 5.449 18.289)"
-        >
-            <text
-            x="27.177"
-            y="55.778"
-            strokeWidth="0.533"
-            fontSize="21.314"
-            xmlSpace="preserve"
-            >
-            <tspan x="27.177" y="55.778" strokeWidth="0.533">
-                Plasmid
-            </tspan>
-            </text>
-            <text
-            x="69.004"
-            y="68.414"
-            strokeWidth="0.265"
-            fontSize="10.583"
-            xmlSpace="preserve"
-            >
-            <tspan
-                x="69.004"
-                y="68.414"
-                style={{ textAlign: "center" }}
-                strokeWidth="0.265"
-                textAnchor="middle"
-            >
-                Bioinformatics Library
-            </tspan>
-            </text>
-        </g>
         <path
             fill="#000"
             fillOpacity="1"

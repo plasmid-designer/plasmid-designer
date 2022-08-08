@@ -47,7 +47,10 @@
       "active": false
     },
     "allowlist": {
-      "all": true
+      "all": true,
+      "dialog": {
+        "all": true
+      }
     },
     "windows": [
       {
