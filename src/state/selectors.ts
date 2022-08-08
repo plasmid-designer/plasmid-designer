@@ -1,8 +1,8 @@
 import { selector, selectorFamily } from 'recoil'
 
-import { projectsState, activeProjectIdState, currentProjectTreeState, TFileNode } from './atoms'
+import { projectsState, activeProjectIdState, currentProjectTreeState } from './atoms'
 import ProjectModel from '../components/models/ProjectModel'
-import { TreeFile } from '@geist-ui/core/esm/tree'
+import { TFileNode, TFileTree } from 'components/workspace/sidebar/FileTree'
 
 export const projectListSelector = selector<ProjectModel[]>({
     key: 'projectListSelector',
@@ -49,18 +49,19 @@ export const projectSelector = selectorFamily({
     }
 })
 
-export const currentProjectFileTree = selector<TreeFile[]>({
+export const currentProjectFileTree = selector<TFileTree>({
     key: 'currentProjectFileTreeSelector',
     get: ({ get }) => {
         const tree = get(currentProjectTreeState)
         if (tree === null) {
             return []
         }
-        const transformTree = (nodes: TFileNode[]): TreeFile[] => {
-            const tree: TreeFile[] = []
+        const transformTree = (nodes: TFileNode[]): TFileTree => {
+            const tree: TFileNode[] = []
             for (const node of nodes) {
-                const treeFile: TreeFile = {
+                const treeFile: TFileNode = {
                     name: node.name,
+                    path: node.path,
                     type: node.type,
                 }
                 if (node.files) {

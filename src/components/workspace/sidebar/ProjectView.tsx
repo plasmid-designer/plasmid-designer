@@ -1,10 +1,11 @@
-import { Button, Tree } from "@geist-ui/core"
+import { Button } from "@geist-ui/core"
 import styled from "styled-components"
 import { open } from '@tauri-apps/api/dialog'
 import { fs } from "@tauri-apps/api"
 import { currentProjectTreeState, TFileNode, TFileTree } from "state/atoms"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { currentProjectFileTree } from "state/selectors"
+import FileTree from "./FileTree"
 
 type Props = {
     className?: string,
@@ -56,7 +57,7 @@ const ProjectView = ({ className }: Props) => {
                 <Button type='default' width='100%' height={0.75} onClick={openFolder}>Open folder</Button>
             )}
             {fileTree && (
-                <Tree value={structuredClone(geistFileTree)} />
+                <FileTree values={structuredClone(geistFileTree)} />
             )}
         </div>
     )
