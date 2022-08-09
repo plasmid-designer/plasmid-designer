@@ -8,6 +8,9 @@ use parking_lot::RwLock;
 mod editor;
 use editor::{CursorMovement, Editor, SelectionMovement};
 
+mod project;
+use project::Project;
+
 mod history;
 
 mod shared;
