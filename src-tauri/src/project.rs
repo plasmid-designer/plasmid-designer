@@ -30,10 +30,18 @@ impl Project {
     where
         P: AsRef<Path>,
     {
+        let file = Self::load_file_contents(path.as_ref());
+        let editor = {
+            let mut editor = Editor::default();
+            if let Some(seq) = file.as_ref().map(|f| f.sequence()) {
+                editor.insert_all(seq);
+            }
+            editor
+        };
         Self {
             path: path.as_ref().to_path_buf(),
-            editor: Editor::default(),
-            file: Self::load_file_contents(path),
+            editor,
+            file,
         }
     }
 
