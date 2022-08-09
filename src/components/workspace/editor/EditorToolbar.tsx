@@ -6,6 +6,7 @@ import { editorHintState, editorRendererState } from '../../../state/atoms'
 import { rendererList } from '../renderers'
 import MenuButton from '../../MenuButton'
 import Toolbar from '../Toolbar'
+import { Checkbox } from '@geist-ui/core'
 
 type Props = {
     className?: string,
@@ -19,42 +20,22 @@ const EditorToolbar = ({ className }: Props) => {
         <Toolbar className={className}>
             <div className="input_container">
                 <MenuButton title="View">
-                    <div className="input_wrapper">
-                        <input
-                            type="checkbox"
-                            id="show-complement"
-                            checked={editorHints.showComplementStrand}
-                            onChange={e => setEditorHints(hints => ({...hints, showComplementStrand: e.target.checked}))}
-                        />
-                        <label htmlFor="show-complement">Show Antistrand</label>
-                    </div>
-                    <div className="input_wrapper">
-                        <input
-                            type="checkbox"
-                            id="show-codon-numbers"
-                            checked={editorHints.showCodonNumbers}
-                            onChange={e => setEditorHints(hints => ({...hints, showCodonNumbers: e.target.checked}))}
-                        />
-                        <label htmlFor="show-codon-numbers">Show Codon Indices</label>
-                    </div>
-                    <div className="input_wrapper">
-                        <input
-                            type="checkbox"
-                            id="show-peptides"
-                            checked={editorHints.showPeptides}
-                            onChange={e => setEditorHints(hints => ({...hints, showPeptides: e.target.checked}))}
-                        />
-                        <label htmlFor="show-peptides">Show Peptides</label>
-                    </div>
-                    <div className="input_wrapper">
-                        <input
-                            type="checkbox"
-                            id="highlight-active-codon"
-                            checked={editorHints.highlightCurrentCodon}
-                            onChange={e => setEditorHints(hints => ({...hints, highlightCurrentCodon: e.target.checked}))}
-                        />
-                        <label htmlFor="highlight-active-codon">Highlight Active Codon</label>
-                    </div>
+                    <Checkbox
+                        checked={editorHints.showComplementStrand}
+                        onChange={e => setEditorHints(hints => ({...hints, showComplementStrand: e.target.checked}))}
+                    >Show Antistrand</Checkbox>
+                    <Checkbox
+                        checked={editorHints.showCodonNumbers}
+                        onChange={e => setEditorHints(hints => ({...hints, showCodonNumbers: e.target.checked}))}
+                    >Show Codon Indices</Checkbox>
+                    <Checkbox
+                        checked={editorHints.showPeptides}
+                        onChange={e => setEditorHints(hints => ({...hints, showPeptides: e.target.checked}))}
+                    >Show Peptides</Checkbox>
+                    <Checkbox
+                        checked={editorHints.highlightCurrentCodon}
+                        onChange={e => setEditorHints(hints => ({...hints, highlightCurrentCodon: e.target.checked}))}
+                    >Highlight Active Codon</Checkbox>
                 </MenuButton>
             </div>
             <div className="input_container" style={{flexGrow: 1}}></div>

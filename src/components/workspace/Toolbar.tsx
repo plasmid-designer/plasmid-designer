@@ -18,7 +18,5 @@ export default styled(Toolbar)`
     height: 2.5rem;
     min-height: 2.5rem;
     align-items: center;
-    background: hsl(0,0%,98%);
-    border-bottom: 1px solid hsl(0,0%,50%);
-    font-size: 10pt;
+    border-bottom: 1px solid hsl(0,0%,90%);
 `

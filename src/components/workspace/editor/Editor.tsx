@@ -54,7 +54,6 @@ const Editor = ({ className }: Props) => {
             )}
             {activeProjectId !== null && (
                 <>
-                    <EditorToolbar />
                     <div
                         ref={editorRef}
                         className="editor"
