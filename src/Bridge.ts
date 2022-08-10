@@ -57,6 +57,7 @@ class EditorBridge {
 
 class ProjectBridge {
     static openFile = (path: string): Promise<Array<ProjectInfo>> => invoke('project_open_file', { path })
+    static setCurrentProject = (id: string) => invoke('project_set_current', { id })
 }
 
 class Bridge {

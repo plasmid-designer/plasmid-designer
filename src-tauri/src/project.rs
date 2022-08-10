@@ -102,21 +102,23 @@ impl Project {
     where
         P: AsRef<Path>,
     {
-        let path = path
+        let extension = path
             .as_ref()
             .extension()
-            .unwrap()
-            .to_string_lossy()
-            .to_string();
-        match path.as_ref() {
-            "fas" | "fasta" => {
-                if let Ok(file) = plasmid::prelude::FastaIupacFile::import_from_path(path) {
-                    Some(ProjectFile::Fasta(file))
-                } else {
-                    None
+            .map(|ext| ext.to_string_lossy().to_string());
+        if let Some(extension) = extension {
+            match extension.as_ref() {
+                "fas" | "fasta" => {
+                    if let Ok(file) = plasmid::prelude::FastaIupacFile::import_from_path(path) {
+                        Some(ProjectFile::Fasta(file))
+                    } else {
+                        None
+                    }
                 }
+                _ => None,
             }
-            _ => None,
+        } else {
+            None
         }
     }
 }

@@ -32,7 +32,7 @@ export const activeProjectIdState = atom<string | null>({
     effects: [persistLocalEffect('activeProjectId')],
 })
 
-export type SIDEBAR_VIEW = 'project' | 'search'
+export type SIDEBAR_VIEW = 'project' | 'search' | 'settings'
 
 export const sidebarViewState = atom<SIDEBAR_VIEW>({
     key: 'sidebarViewState',

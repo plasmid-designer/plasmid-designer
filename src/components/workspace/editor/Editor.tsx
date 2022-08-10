@@ -30,11 +30,16 @@ const Editor = ({ className, projectId }: Props) => {
             handleMouseEvent,
         },
         isLoading,
+        reloadEditor,
     } = useEditor(projectId)
 
     useEffect(() => {
         editorRef.current?.focus()
     }, [])
+
+    useEffect(() => {
+        reloadEditor()
+    }, [projectId])
 
     const handleFocusChange = useCallback((showCursor: boolean, refocus = false) => () => {
         setRenderCursor(showCursor)

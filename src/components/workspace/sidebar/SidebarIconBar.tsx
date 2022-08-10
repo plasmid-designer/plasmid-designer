@@ -1,6 +1,6 @@
 import styled from "styled-components"
-import { Folder, Search } from '@geist-ui/icons'
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { Folder, Search, Settings } from '@geist-ui/icons'
+import { useRecoilState } from "recoil";
 import { sidebarViewState } from "state/atoms";
 
 type Props = {
@@ -19,6 +19,10 @@ const SidebarIconBar = ({ className }: Props) => {
             </div>
             <div className="icon" data-active={sidebarView === 'search'}>
                 <Search size={ICON_SIZE} onClick={() => setSidebarView('search')} />
+            </div>
+            <div className="spacer" />
+            <div className="icon" data-active={sidebarView === 'settings'}>
+                <Settings size={ICON_SIZE} onClick={() => setSidebarView('settings')} />
             </div>
         </div>
     )
@@ -70,5 +74,9 @@ export default styled(SidebarIconBar)`
         &:hover svg {
             stroke: hsl(0,0%,0%);
         }
+    }
+
+    & .spacer {
+        flex-grow: 1;
     }
 `

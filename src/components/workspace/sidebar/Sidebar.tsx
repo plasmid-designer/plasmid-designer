@@ -1,3 +1,4 @@
+import { Note } from "@geist-ui/core"
 import React from "react"
 import { useRecoilValue } from "recoil"
 import { sidebarViewState, SIDEBAR_VIEW } from "state/atoms"
@@ -9,9 +10,18 @@ type Props = {
     className?: string,
 }
 
+const UnimplementedView = () => {
+    return (
+        <div>
+            <Note>Unimplemented</Note>
+        </div>
+    )
+}
+
 const SidebarViewLookup: Record<SIDEBAR_VIEW, React.FunctionComponent> = {
     'project': ProjectView,
-    'search': () => null,
+    'search': UnimplementedView,
+    'settings': UnimplementedView,
 }
 
 const Sidebar = ({ className }: Props) => {

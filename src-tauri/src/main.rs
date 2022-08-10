@@ -27,6 +27,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             // Projects
             project_open_file,
+            project_set_current,
             // Editor
             initialize_editor,
             calculate_sequence_data,
@@ -65,6 +66,11 @@ fn project_open_file(
     state.read().project_infos()
 }
 
+#[tauri::command]
+fn project_set_current(state: tauri::State<RwLock<ProjectManager>>, id: String) {
+    state.write().set_current_project(id);
+}
+
 /// Editor Bridge
 
 #[tauri::command]
@@ -75,132 +81,188 @@ fn initialize_editor(state: tauri::State<RwLock<Editor>>, sequence: String) {
 }
 
 #[tauri::command]
-fn sequence_insert(state: tauri::State<RwLock<Editor>>, letter: char) {
-    state.write().insert(letter);
+fn sequence_insert(state: tauri::State<RwLock<ProjectManager>>, letter: char) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.insert(letter);
 }
 
 #[tauri::command]
-fn sequence_insert_all(state: tauri::State<RwLock<Editor>>, text: String) {
+fn sequence_insert_all(state: tauri::State<RwLock<ProjectManager>>, text: String) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
     let text_without_whitespace = text.chars().filter(|c| !c.is_whitespace()).collect();
-    state.write().insert_all(text_without_whitespace);
+    editor.insert_all(text_without_whitespace);
 }
 
 #[tauri::command]
-fn sequence_delete(state: tauri::State<RwLock<Editor>>) {
-    state.write().delete();
+fn sequence_delete(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.delete();
 }
 
 #[tauri::command]
-fn sequence_delete_next(state: tauri::State<RwLock<Editor>>) {
-    state.write().delete_next();
+fn sequence_delete_next(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.delete_next();
 }
 
 #[tauri::command]
-fn move_cursor(state: tauri::State<RwLock<Editor>>, index: usize) {
-    state.write().move_cursor(CursorMovement::To(index));
+fn move_cursor(state: tauri::State<RwLock<ProjectManager>>, index: usize) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_cursor(CursorMovement::To(index));
 }
 
 #[tauri::command]
-fn move_cursor_left(state: tauri::State<RwLock<Editor>>) {
-    state.write().move_cursor(CursorMovement::By(-1));
+fn move_cursor_left(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_cursor(CursorMovement::By(-1));
 }
 
 #[tauri::command]
-fn move_cursor_right(state: tauri::State<RwLock<Editor>>) {
-    state.write().move_cursor(CursorMovement::By(1));
+fn move_cursor_right(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_cursor(CursorMovement::By(1));
 }
 
 #[tauri::command]
-fn move_cursor_to_start(state: tauri::State<RwLock<Editor>>) {
-    state.write().move_cursor(CursorMovement::Start);
+fn move_cursor_to_start(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_cursor(CursorMovement::Start);
 }
 
 #[tauri::command]
-fn move_cursor_to_end(state: tauri::State<RwLock<Editor>>) {
-    state.write().move_cursor(CursorMovement::End);
+fn move_cursor_to_end(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_cursor(CursorMovement::End);
 }
 
 #[tauri::command]
-fn move_cursor_to_codon_start(state: tauri::State<RwLock<Editor>>) {
-    state.write().move_cursor(CursorMovement::CodonStart);
+fn move_cursor_to_codon_start(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_cursor(CursorMovement::CodonStart);
 }
 
 #[tauri::command]
-fn move_cursor_to_codon_end(state: tauri::State<RwLock<Editor>>) {
-    state.write().move_cursor(CursorMovement::CodonEnd);
+fn move_cursor_to_codon_end(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_cursor(CursorMovement::CodonEnd);
 }
 
 #[tauri::command]
-fn set_selection(state: tauri::State<RwLock<Editor>>, start: usize, end: usize) {
-    state
-        .write()
-        .move_selection(SelectionMovement::Set { start, end });
+fn set_selection(state: tauri::State<RwLock<ProjectManager>>, start: usize, end: usize) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_selection(SelectionMovement::Set { start, end });
 }
 
 #[tauri::command]
-fn set_selection_all(state: tauri::State<RwLock<Editor>>) {
-    state.write().move_selection(SelectionMovement::All);
+fn set_selection_all(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_selection(SelectionMovement::All);
 }
 
 #[tauri::command]
-fn reset_selection(state: tauri::State<RwLock<Editor>>) {
-    state.write().move_selection(SelectionMovement::Reset);
+fn reset_selection(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_selection(SelectionMovement::Reset);
 }
 
 #[tauri::command]
-fn expand_selection_left(state: tauri::State<RwLock<Editor>>) {
-    state
-        .write()
-        .move_selection(SelectionMovement::ExpandBy(-1));
+fn expand_selection_left(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_selection(SelectionMovement::ExpandBy(-1));
 }
 
 #[tauri::command]
-fn expand_selection_right(state: tauri::State<RwLock<Editor>>) {
-    state.write().move_selection(SelectionMovement::ExpandBy(1));
+fn expand_selection_right(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.move_selection(SelectionMovement::ExpandBy(1));
 }
 
 #[tauri::command]
-fn get_selected_sequence(state: tauri::State<RwLock<Editor>>) -> String {
-    state.read().get_selected_sequence()
+fn get_selected_sequence(state: tauri::State<RwLock<ProjectManager>>) -> String {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.get_selected_sequence()
 }
 
 #[tauri::command]
-fn undo(state: tauri::State<RwLock<Editor>>) {
-    state.write().undo();
+fn undo(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.undo();
 }
 
 #[tauri::command]
-fn redo(state: tauri::State<RwLock<Editor>>) {
-    state.write().redo();
+fn redo(state: tauri::State<RwLock<ProjectManager>>) {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    editor.redo();
 }
 
 #[tauri::command]
-fn calculate_sequence_data(state: tauri::State<RwLock<Editor>>, force: bool) -> SequenceData {
-    let data = {
-        if force || state.read().sequence_dirty {
-            let mut data: Vec<SequenceItem> = Vec::with_capacity(state.read().codons.len());
-            state.write().update();
-            for (index, codon) in state.read().codons.iter().enumerate() {
-                data.push(SequenceItem {
-                    codon: codon.nucleotides.clone(),
-                    anticodon: codon.anti_nucleotides.clone(),
-                    peptide: codon.peptide,
-                    start_index: index * 3,
-                })
-            }
-            Some(data)
-        } else {
-            None
+fn calculate_sequence_data(
+    state: tauri::State<RwLock<ProjectManager>>,
+    force: bool,
+) -> SequenceData {
+    let mut manager = state.write();
+    let editor = manager.current_editor().unwrap();
+
+    let data = if force || editor.sequence_dirty {
+        let mut data: Vec<SequenceItem> = Vec::with_capacity(editor.codons.len());
+        editor.update();
+        for (index, codon) in editor.codons.iter().enumerate() {
+            data.push(SequenceItem {
+                codon: codon.nucleotides.clone(),
+                anticodon: codon.anti_nucleotides.clone(),
+                peptide: codon.peptide,
+                start_index: index * 3,
+            })
         }
+        Some(data)
+    } else {
+        None
     };
-    let state = state.read();
     SequenceData {
         sequence: data,
-        bp_count: state.sequence.len(),
+        bp_count: editor.sequence.len(),
         cursor: CursorData {
-            position: state.cursor_pos,
-            is_at_end: state.cursor_pos == state.sequence.len(),
+            position: editor.cursor_pos,
+            is_at_end: editor.cursor_pos == editor.sequence.len(),
         },
-        selection: state.selection.as_ref().map(|selection| selection.into()),
+        selection: editor.selection.as_ref().map(|selection| selection.into()),
     }
 }

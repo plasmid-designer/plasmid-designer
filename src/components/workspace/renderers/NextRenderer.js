@@ -325,6 +325,7 @@ export default styled(NextRenderer)`
     cursor: text;
     width: 100%;
     padding: 1rem;
+    row-gap: 1rem;
 
     & .cursor-wrapper {
         margin-top: 0.45rem;

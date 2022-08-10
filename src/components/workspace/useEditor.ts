@@ -24,6 +24,7 @@ type useEditorReturnTypes = {
         handleKeyDown: (e: React.KeyboardEvent) => void,
         handleMouseEvent: (e: React.MouseEvent) => void,
     }
+    reloadEditor: () => Promise<void>,
 }
 
 const useEditor = (projectId: string): useEditorReturnTypes => {
@@ -32,8 +33,6 @@ const useEditor = (projectId: string): useEditorReturnTypes => {
     const [cursorModel, setCursorModel] = useState(new SequenceDataCursorModel())
     const [selectionModel, setSelectionModel] = useState(new SequenceDataSelectionModel())
 
-    const [activeProject, setActiveProject] = useRecoilState(activeProjectSelector)
-
     const {
         isSelecting,
         selection,
@@ -41,22 +40,6 @@ const useEditor = (projectId: string): useEditorReturnTypes => {
         updateSelection,
         endSelection,
     } = useSelection()
-
-    useEffect(() => {
-        const initialize = async () => {
-            setIsLoading(true)
-            await Bridge.Editor.initializeEditor(activeProject?.sequence ?? '')
-            await updateSequence(true)
-            setIsLoading(false)
-        }
-        initialize()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeProject?.id])
-
-    useEffect(() => {
-        if (!activeProject?.id) return
-        setActiveProject(project => project?.updateImmutable({ sequence: sequenceModel.nucleotideString }) ?? null)
-    }, [activeProject?.id, setActiveProject, sequenceModel])
 
     useEffect(() => {
         const updateBackendSelection = async () => {
@@ -194,6 +177,7 @@ const useEditor = (projectId: string): useEditorReturnTypes => {
             handleKeyDown: wrapUpdatingAsync(handleKeyDown),
             handleMouseEvent: wrapUpdatingAsync(handleMouseEvent),
         },
+        reloadEditor: async () => await updateSequence(true),
     }
 }
 
