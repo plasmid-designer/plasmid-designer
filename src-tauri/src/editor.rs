@@ -37,6 +37,7 @@ impl Selection {
     }
 }
 
+#[derive(Debug)]
 pub struct Editor {
     pub sequence_dirty: bool,
     pub cursor_pos: usize,

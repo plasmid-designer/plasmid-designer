@@ -26,7 +26,7 @@ type useEditorReturnTypes = {
     }
 }
 
-const useEditor = (): useEditorReturnTypes => {
+const useEditor = (projectId: string): useEditorReturnTypes => {
     const [isLoading, setIsLoading] = useState(false)
     const [sequenceModel, setSequenceModel] = useState(new SequenceDataModel())
     const [cursorModel, setCursorModel] = useState(new SequenceDataCursorModel())

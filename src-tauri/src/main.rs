@@ -3,6 +3,8 @@
     windows_subsystem = "windows"
 )]
 
+use std::path::{Path, PathBuf};
+
 use parking_lot::RwLock;
 
 mod editor;
@@ -11,6 +13,9 @@ use editor::{CursorMovement, Editor, SelectionMovement};
 mod project;
 use project::Project;
 
+mod project_manager;
+use project_manager::{ProjectInfo, ProjectManager};
+
 mod history;
 
 mod shared;
@@ -18,8 +23,11 @@ use shared::{CursorData, SequenceData, SequenceItem};
 
 fn main() {
     tauri::Builder::default()
-        .manage(RwLock::new(Editor::default()))
+        .manage(RwLock::new(ProjectManager::default()))
         .invoke_handler(tauri::generate_handler![
+            // Projects
+            project_open_file,
+            // Editor
             initialize_editor,
             calculate_sequence_data,
             sequence_insert,
@@ -45,6 +53,19 @@ fn main() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+
+/// Project Bridge
+
+#[tauri::command]
+fn project_open_file(
+    state: tauri::State<RwLock<ProjectManager>>,
+    path: PathBuf,
+) -> Vec<ProjectInfo> {
+    state.write().load_file(&path);
+    state.read().project_infos()
+}
+
+/// Editor Bridge
 
 #[tauri::command]
 fn initialize_editor(state: tauri::State<RwLock<Editor>>, sequence: String) {

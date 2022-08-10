@@ -4,7 +4,7 @@ use plasmid::{
     uni::IupacNucleotide,
 };
 
-#[derive(serde::Serialize)]
+#[derive(Debug, serde::Serialize)]
 pub struct DisplayCodon {
     pub nucleotides: Vec<char>,
     pub anti_nucleotides: Vec<char>,

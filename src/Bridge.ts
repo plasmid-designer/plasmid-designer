@@ -26,6 +26,11 @@ export type EditorSequenceData = {
     selection: EditorSelectionData,
 }
 
+export type ProjectInfo = {
+    name: string,
+    uuid: string,
+}
+
 class EditorBridge {
     static calculateSequenceData = (force: boolean) => invoke<EditorSequenceData>('calculate_sequence_data', { force })
     static insert = (letter: string) => invoke('sequence_insert', { letter })
@@ -44,14 +49,14 @@ class EditorBridge {
     static resetSelection = () => invoke('reset_selection')
     static expandSelectionLeft = () => invoke('expand_selection_left')
     static expandSelectionRight = () => invoke('expand_selection_right')
-    static getSelectedSequence = () => invoke('get_selected_sequence') as Promise<string>
+    static getSelectedSequence = (): Promise<string> => invoke('get_selected_sequence')
     static undo = () => invoke('undo')
     static redo = () => invoke('redo')
     static initializeEditor = (sequence: string) => invoke('initialize_editor', { sequence })
 }
 
 class ProjectBridge {
-    static loadProject = (path: string) => invoke('project_load_project', { path })
+    static openFile = (path: string): Promise<Array<ProjectInfo>> => invoke('project_open_file', { path })
 }
 
 class Bridge {

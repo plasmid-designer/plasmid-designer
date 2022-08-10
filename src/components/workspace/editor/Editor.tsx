@@ -11,9 +11,10 @@ import { rendererList, NextRenderer } from '../renderers'
 
 type Props = {
     className?: string,
+    projectId: string,
 }
 
-const Editor = ({ className }: Props) => {
+const Editor = ({ className, projectId }: Props) => {
     const editorRef = useRef<HTMLDivElement>(null)
     const [renderCursor, setRenderCursor] = useState(false)
 
@@ -29,7 +30,7 @@ const Editor = ({ className }: Props) => {
             handleMouseEvent,
         },
         isLoading,
-    } = useEditor()
+    } = useEditor(projectId)
 
     useEffect(() => {
         editorRef.current?.focus()

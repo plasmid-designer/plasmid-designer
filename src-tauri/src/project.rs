@@ -2,8 +2,10 @@ use std::path::{Path, PathBuf};
 
 use plasmid::{
     prelude::{FastaIupacFile, Import},
-    traits::ToLetter,
+    traits::{ToLetter, TryFromLetter},
+    uni::IupacNucleotide,
 };
+use uuid::Uuid;
 
 use crate::editor::Editor;
 
@@ -17,12 +19,39 @@ impl ProjectFile {
             Self::Fasta(file) => file.sequence.iter().map(|c| c.to_letter()).collect(),
         }
     }
+
+    pub fn set_sequence(&mut self, sequence: String) {
+        match self {
+            Self::Fasta(file) => {
+                file.sequence = sequence
+                    .chars()
+                    .filter_map(|c| IupacNucleotide::try_from_letter(c).ok())
+                    .collect();
+            }
+        }
+    }
+
+    pub fn set_sequence_iupac(&mut self, sequence: &[IupacNucleotide]) {
+        match self {
+            Self::Fasta(file) => {
+                file.sequence = Vec::from_iter(sequence.into_iter().map(|n| n.clone()));
+            }
+        }
+    }
+}
+
+pub enum ProjectType {
+    File,
+    Scratchpad,
 }
 
 pub struct Project {
-    path: PathBuf,
-    editor: Editor,
+    pub uuid: Uuid,
+    pub editor: Editor,
+    pub name: Option<String>,
+    path: Option<PathBuf>,
     file: Option<ProjectFile>,
+    project_type: ProjectType,
 }
 
 impl Project {
@@ -39,9 +68,33 @@ impl Project {
             editor
         };
         Self {
-            path: path.as_ref().to_path_buf(),
-            editor,
+            uuid: Uuid::new_v4(),
+            project_type: ProjectType::File,
+            name: path
+                .as_ref()
+                .components()
+                .last()
+                .map(|s| s.as_os_str().to_string_lossy().to_string()),
+            path: Some(path.as_ref().to_path_buf()),
             file,
+            editor,
+        }
+    }
+
+    pub fn new_scratchpad() -> Self {
+        Self {
+            uuid: Uuid::new_v4(),
+            project_type: ProjectType::Scratchpad,
+            name: None,
+            path: None,
+            file: None,
+            editor: Editor::default(),
+        }
+    }
+
+    pub fn save(&mut self) {
+        if let Some(file) = self.file.as_mut() {
+            file.set_sequence_iupac(&self.editor.sequence.iter().cloned().collect::<Vec<_>>()[..]);
         }
     }
 

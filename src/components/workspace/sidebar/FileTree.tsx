@@ -1,6 +1,8 @@
 import { ChevronDown, ChevronRight, File } from "@geist-ui/icons"
 import Bridge from "Bridge"
 import { useState } from "react"
+import { useRecoilState } from "recoil"
+import { openProjectsState } from "state/atoms"
 import styled from "styled-components"
 
 export type TFileNode = {
@@ -25,10 +27,12 @@ type Props = {
 
 const _Node = ({ className, node }: NodeProps) => {
     const [isExpanded, setIsExpanded] = useState(false)
+    const [_openProjects, setOpenProjects] = useRecoilState(openProjectsState)
     const Icon = node.type === 'directory' ? isExpanded ? ChevronDown : ChevronRight : File
 
-    const handleFileClick = () => {
-        Bridge.Project.loadProject(node.path)
+    const handleFileClick = async () => {
+        const projects = await Bridge.Project.openFile(node.path)
+        setOpenProjects(projects)
     }
 
     const handleDirectoryClick = () => {

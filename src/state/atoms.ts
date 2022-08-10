@@ -1,3 +1,4 @@
+import { ProjectInfo } from 'Bridge'
 import { atom } from 'recoil'
 import ProjectModel from '../components/models/ProjectModel'
 import { persistLocalEffect } from './persist'
@@ -50,4 +51,9 @@ export type TFileTree = TFileNode[]
 export const currentProjectTreeState = atom<TFileTree | null>({
     key: 'currentProjectTreeState',
     default: null,
+})
+
+export const openProjectsState = atom<Array<ProjectInfo>>({
+    key: 'openProjectsState',
+    default: [],
 })
