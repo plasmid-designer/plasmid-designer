@@ -1,10 +1,13 @@
+use ts_rs::TS;
+
 use plasmid::{
     prelude::DnaCodon,
     traits::{Nucleotide, ToLetter, TryFromStr},
     uni::IupacNucleotide,
 };
 
-#[derive(Debug, serde::Serialize)]
+#[derive(Debug, serde::Serialize, TS)]
+#[ts(export)]
 pub struct DisplayCodon {
     pub nucleotides: Vec<char>,
     pub anti_nucleotides: Vec<char>,
