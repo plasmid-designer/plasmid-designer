@@ -158,7 +158,7 @@ const useEditor = (projectId: string): useEditorReturnTypes => {
             setSequenceModel(new SequenceDataModel(data))
         }
         setCursorModel(new SequenceDataCursorModel(data?.cursor))
-        setSelectionModel(new SequenceDataSelectionModel(data?.selection))
+        setSelectionModel(new SequenceDataSelectionModel(data?.selection ?? undefined))
     }
 
     type RelayAsyncFn<T, R> = (...data: T[]) => Promise<R>

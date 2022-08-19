@@ -1,38 +1,11 @@
 import { invoke as tauriInvoke, InvokeArgs } from '@tauri-apps/api/tauri'
 
+import { SequenceData, ProjectInfo } from './bindings'
+
 const invoke = <T>(cmd: string, args?: InvokeArgs | undefined) => tauriInvoke(cmd, args) as Promise<T>
 
-export type EditorSequenceItem = {
-    codon: string[],
-    anticodon: string[],
-    peptide?: string,
-    start_index: number,
-}
-
-export type EditorCursorData = {
-    position: number,
-    is_at_end: boolean,
-}
-
-export type EditorSelectionData = {
-    start: number,
-    end: number,
-}
-
-export type EditorSequenceData = {
-    sequence?: EditorSequenceItem[],
-    bp_count: number,
-    cursor: EditorCursorData,
-    selection: EditorSelectionData,
-}
-
-export type ProjectInfo = {
-    name: string,
-    uuid: string,
-}
-
 class EditorBridge {
-    static calculateSequenceData = (force: boolean) => invoke<EditorSequenceData>('calculate_sequence_data', { force })
+    static calculateSequenceData = (force: boolean) => invoke<SequenceData>('calculate_sequence_data', { force })
     static insert = (letter: string) => invoke('sequence_insert', { letter })
     static insertAll = (text: string) => invoke('sequence_insert_all', { text })
     static delete = () => invoke('sequence_delete')

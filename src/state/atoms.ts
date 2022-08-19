@@ -1,4 +1,4 @@
-import { ProjectInfo } from 'Bridge'
+import { ProjectInfo } from 'bindings'
 import { atom } from 'recoil'
 import ProjectModel from '../components/models/ProjectModel'
 import { persistLocalEffect } from './persist'

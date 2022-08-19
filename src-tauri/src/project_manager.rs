@@ -5,7 +5,8 @@ use uuid::Uuid;
 
 use crate::{editor::Editor, project::Project};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ts_rs::TS)]
+#[ts(export)]
 pub struct ProjectInfo {
     name: String,
     uuid: String,

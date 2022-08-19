@@ -1,4 +1,4 @@
-import { EditorCursorData, EditorSelectionData, EditorSequenceData, EditorSequenceItem } from "../../Bridge"
+import { CursorData, SelectionData, SequenceData, SequenceItem } from "bindings"
 
 class Range {
     start: number
@@ -13,13 +13,13 @@ class Range {
 }
 
 export class SequenceDataSelectionModel {
-    _data: EditorSelectionData | undefined
+    _data: SelectionData | undefined
     start: number | undefined
     end: number | undefined
     length: number
     isActive: boolean
 
-    constructor(data?: EditorSelectionData) {
+    constructor(data?: SelectionData) {
         this._data = data
 
         this.start = this._data?.start
@@ -47,10 +47,10 @@ export class SequenceDataSelectionModel {
 }
 
 export class SequenceDataCursorModel {
-    _data: EditorCursorData
+    _data: CursorData
     cursorPosition: number
 
-    constructor(data?: EditorCursorData) {
+    constructor(data?: CursorData) {
         this._data = data ?? { position: 0, is_at_end: true }
 
         this.cursorPosition = this._data.position
@@ -68,9 +68,9 @@ export class SequenceDataCursorModel {
 }
 
 export class SequenceDataItemModel {
-    data: EditorSequenceItem
+    data: SequenceItem
 
-    constructor(item: EditorSequenceItem) {
+    constructor(item: SequenceItem) {
         this.data = item
     }
 
@@ -104,18 +104,18 @@ export class SequenceDataItemModel {
 }
 
 export default class SequenceDataModel {
-    _data: { sequence: EditorSequenceItem[], bp_count: number }
+    _data: { sequence: SequenceItem[], bp_count: number }
     _items: SequenceDataItemModel[]
     _selection: SequenceDataSelectionModel
 
-    constructor(data?: EditorSequenceData) {
+    constructor(data?: SequenceData) {
         const patchedData = {
             sequence: data?.sequence ?? [],
             bp_count: data?.bp_count ?? 0,
         }
         this._data = patchedData
         this._items = this._data.sequence.map(item => new SequenceDataItemModel(item))
-        this._selection = new SequenceDataSelectionModel(data?.selection)
+        this._selection = new SequenceDataSelectionModel(data?.selection ?? undefined)
     }
 
     /**
