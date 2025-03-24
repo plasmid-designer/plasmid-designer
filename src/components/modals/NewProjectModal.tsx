@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 import styled from 'styled-components'
 
 import Modal from './Modal'
@@ -14,8 +14,8 @@ type Props = {
 }
 
 const NewProjectModal = ({ className, isOpen, onClose }: Props) => {
-    const setProjects = useSetRecoilState(projectsState)
-    const setActiveProjectId = useSetRecoilState(activeProjectIdState)
+    const setProjects = useSetAtom(projectsState)
+    const setActiveProjectId = useSetAtom(activeProjectIdState)
 
     const [name, setName] = useState('')
 

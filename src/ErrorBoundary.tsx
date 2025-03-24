@@ -1,4 +1,4 @@
-import React, { ErrorInfo } from "react"
+import React, { type ErrorInfo } from "react"
 import styled from "styled-components"
 
 type Props = {
@@ -27,6 +27,7 @@ class ErrorBoundary extends React.Component<Props, State> {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+        console.error(error)
         // TODO: Log error somehow
     }
 
@@ -54,7 +55,11 @@ class ErrorBoundary extends React.Component<Props, State> {
     }
 }
 
-export default styled(ErrorBoundary)`
+function ErrorBoundaryWrapper({ children }: { children: React.ReactNode }) {
+    return <ErrorBoundary>{children}</ErrorBoundary>
+}
+
+export default styled(ErrorBoundaryWrapper)`
     width: 100%;
     height: 100vh;
     display: flex;

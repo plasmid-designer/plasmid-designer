@@ -1,6 +1,6 @@
 import { FilePlus, Edit } from 'react-feather'
 import { useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useAtom, useAtomValue } from 'jotai'
 import styled from 'styled-components'
 
 import { activeProjectIdState } from '../../../state/atoms'
@@ -8,15 +8,15 @@ import { projectListSelector } from '../../../state/selectors'
 import NewProjectModal from '../../modals/NewProjectModal'
 import Toolbar from '../Toolbar'
 import EditProjectModal from '../../modals/EditProjectModal'
-import ProjectModel from '../../models/ProjectModel'
+import type ProjectModel from '../../models/ProjectModel'
 
 type Props = {
     className?: string,
 }
 
 const Sidebar = ({ className }: Props) => {
-    const projects = useRecoilValue(projectListSelector)
-    const [activeProjectId, setActiveProjectId] = useRecoilState(activeProjectIdState)
+    const projects = useAtomValue(projectListSelector)
+    const [activeProjectId, setActiveProjectId] = useAtom(activeProjectIdState)
 
     const [showNewProjectModal, setShowNewProjectModal] = useState(false)
     const [showEditProjectModal, setShowEditProjectModal] = useState(false)

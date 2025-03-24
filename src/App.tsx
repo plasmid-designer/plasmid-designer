@@ -1,6 +1,5 @@
-import React from 'react'
 import { useLayoutEffect } from 'react'
-import { RecoilRoot } from 'recoil'
+import { Provider as JotaiProvider } from 'jotai'
 import styled from 'styled-components'
 import Modal from 'react-modal'
 
@@ -19,12 +18,12 @@ const App = ({ className }: Props) => {
 
     return (
         <ErrorBoundary>
-            <RecoilRoot>
+            <JotaiProvider>
                 <div className={className}>
                     <Header />
                     <Workspace />
                 </div>
-            </RecoilRoot>
+            </JotaiProvider>
         </ErrorBoundary>
     );
 }

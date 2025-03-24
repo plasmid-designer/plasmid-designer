@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import styled from 'styled-components'
 import YAPV from '@yapv/core'
 import SVG from '@yapv/svg'
 import { activeProjectSelector } from '../../state/selectors'
 import { useElementSize } from '../../hooks/useElementSize'
-import { VectorMap } from '@yapv/core/lib/models/types'
+import type { VectorMap } from '@yapv/core/lib/models/types'
 
 const getNucleotideColor = (nucleotide: string) => {
     switch (nucleotide.toUpperCase()) {
@@ -24,7 +24,7 @@ type Props = {
 
 const PlasmidViewer = ({ className, name = "Foo" }: Props) => {
     const ref = useRef<HTMLDivElement>(null)
-    const activeProject = useRecoilValue(activeProjectSelector)
+    const activeProject = useAtomValue(activeProjectSelector)
     const sequence = useMemo(() => {
         if (!activeProject?.id) { return [] }
         return [...activeProject.sequence]
@@ -134,7 +134,7 @@ const PlasmidViewer = ({ className, name = "Foo" }: Props) => {
         renderer.use(SVG.circular)
         renderer.draw(sequenceConfig as VectorMap)
         ref.current.replaceChildren(el)
-    }, [size, sequence, sequenceConfig])
+    }, [size, sequenceConfig])
 
     return (
         <div ref={parentRef} className={className}>

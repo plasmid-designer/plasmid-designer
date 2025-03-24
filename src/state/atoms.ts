@@ -1,32 +1,22 @@
-import { atom } from 'recoil'
-import ProjectModel from '../components/models/ProjectModel'
-import { persistLocalEffect } from './persist'
+import { atomWithStorage } from 'jotai/utils'
+import type ProjectModel from '../components/models/ProjectModel'
 
-export const editorHintState = atom({
-    key: 'editorHintState',
-    default: {
-        showComplementStrand: true,
-        showCodonNumbers: true,
-        showPeptides: true,
-        highlightCurrentCodon: true,
-    },
-    effects: [persistLocalEffect('editorHints')],
+export type EditorHintState = {
+    showComplementStrand: boolean
+    showCodonNumbers: boolean
+    showPeptides: boolean
+    highlightCurrentCodon: boolean
+}
+
+export const editorHintState = atomWithStorage<EditorHintState>('editorHints', {
+    showComplementStrand: true,
+    showCodonNumbers: true,
+    showPeptides: true,
+    highlightCurrentCodon: true,
 })
 
-export const editorRendererState = atom({
-    key: 'editorRendererState',
-    default: 'next',
-    effects: [persistLocalEffect('preferredRenderer')],
-})
+export type EditorRenderer = 'next'
 
-export const projectsState = atom<Record<string, ProjectModel>>({
-    key: 'projectsState',
-    default: {},
-    effects: [persistLocalEffect('projects')],
-})
-
-export const activeProjectIdState = atom<string | null>({
-    key: 'activeProjectIdState',
-    default: null,
-    effects: [persistLocalEffect('activeProjectId')],
-})
+export const editorRendererState = atomWithStorage<EditorRenderer>('preferredRenderer', 'next')
+export const projectsState = atomWithStorage<Record<string, ProjectModel>>('projects', {})
+export const activeProjectIdState = atomWithStorage<string | null>('activeProjectId', null)

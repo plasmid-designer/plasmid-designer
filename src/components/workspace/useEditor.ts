@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { invoke } from '@tauri-apps/api/tauri'
-import { useRecoilState } from 'recoil'
+import { useState, useEffect, useCallback } from 'react'
+import { useAtom } from 'jotai'
+import { invoke } from '@tauri-apps/api/core'
 
 import { activeProjectSelector } from '../../state/selectors'
 
@@ -34,12 +34,12 @@ const Bridge = {
 const iupacChars = "ACGTWSMKRYBVDHN-"
 
 const findIndex = (currentTarget: HTMLElement) => {
-    if (currentTarget.dataset.index) return parseInt(currentTarget.dataset.index)
-    if (currentTarget.parentElement?.dataset.index) return parseInt(currentTarget.parentElement.dataset.index)
+    if (currentTarget.dataset.index) return Number.parseInt(currentTarget.dataset.index)
+    if (currentTarget.parentElement?.dataset.index) return Number.parseInt(currentTarget.parentElement.dataset.index)
     return null
 }
 
-type useEditorReturnTypes = {
+type UseEditorReturnTypes = {
     isLoading: boolean,
     cursor: import('./SequenceDataModel').SequenceDataCursorModel,
     sequence: import('./SequenceDataModel').default,
@@ -50,13 +50,13 @@ type useEditorReturnTypes = {
     }
 }
 
-const useEditor = (): useEditorReturnTypes => {
+const useEditor = (): UseEditorReturnTypes => {
     const [isLoading, setIsLoading] = useState(false)
     const [sequenceModel, setSequenceModel] = useState(new SequenceDataModel())
     const [cursorModel, setCursorModel] = useState(new SequenceDataCursorModel())
     const [selectionModel, setSelectionModel] = useState(new SequenceDataSelectionModel())
 
-    const [activeProject, setActiveProject] = useRecoilState(activeProjectSelector)
+    const [activeProject, setActiveProject] = useAtom(activeProjectSelector)
 
     const {
         isSelecting,
@@ -79,14 +79,15 @@ const useEditor = (): useEditorReturnTypes => {
 
     useEffect(() => {
         if (!activeProject?.id) return
-        setActiveProject(project => project?.updateImmutable({ sequence: sequenceModel.nucleotideString }) ?? null)
+        setActiveProject(activeProject.updateImmutable({ sequence: sequenceModel.nucleotideString }))
     }, [activeProject?.id, setActiveProject, sequenceModel])
 
     useEffect(() => {
         const updateBackendSelection = async () => {
             if (selection.start === 0 && selection.end === 0) {
                 return
-            } else if (selection.start === selection.end) {
+            }
+            if (selection.start === selection.end) {
                 await Bridge.resetSelection()
             } else {
                 await Bridge.setSelection(selection.start, selection.end)

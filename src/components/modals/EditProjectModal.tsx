@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useRecoilState } from 'recoil'
+import { useAtom } from 'jotai'
 import styled from 'styled-components'
 
 import Modal from './Modal'
@@ -14,14 +14,14 @@ type Props = {
 }
 
 const EditProjectModal = ({ className, isOpen, onClose, projectId }: Props) => {
-    const [project, setProject] = useRecoilState(projectSelector(projectId))
+    const [project, setProject] = useAtom(projectSelector(projectId))
     const [name, setName] = useState(project?.name ?? '')
 
     useEffect(() => {
         if (!projectId) return
         setName(project?.name ?? '')
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [projectId])
+    }, [projectId, project])
 
     const handleClose = () => {
         onClose()

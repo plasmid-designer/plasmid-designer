@@ -1,17 +1,17 @@
 import { memo, useMemo } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import styled from 'styled-components'
 
 import { editorHintState } from '../../../state/atoms'
 import ColorUtil from '../../../util/ColorUtil'
 
-const _Cursor = ({ className }) => {
+const UnstyledCursor = ({ className }) => {
     return (
         <div className={className} />
     )
 }
 
-const Cursor = styled(_Cursor)`
+const Cursor = styled(UnstyledCursor)`
     position: absolute;
     top: calc(50% - 0.5rem);
     display: flex;
@@ -41,7 +41,7 @@ const Cursor = styled(_Cursor)`
  * inSelection: boolean,
  * }} props
  */
-const _Nucleotide = ({ className, letter, index }) => {
+const UnstyledNucleotide = ({ className, letter, index }) => {
     return (
         <div className={className} data-index={index}>
             {letter}
@@ -50,7 +50,7 @@ const _Nucleotide = ({ className, letter, index }) => {
 }
 
 const Nucleotide = memo(
-    styled(_Nucleotide)`
+    styled(UnstyledNucleotide)`
         position: relative;
         color: ${props => props.color};
         background: ${props => props.inSelection ? 'hsla(327, 20%, 67%, 0.5)' : 'transparent'};
@@ -65,7 +65,7 @@ const Nucleotide = memo(
  * index: number,
  * }} props
  */
-const _Peptide = ({ className, letter, index }) => {
+const UnstyledPeptide = ({ className, letter, index }) => {
     return (
         <div className={className} data-index={index}>
             <span>{letter}</span>
@@ -74,7 +74,7 @@ const _Peptide = ({ className, letter, index }) => {
 }
 
 const Peptide = memo(
-    styled(_Peptide)`
+    styled(UnstyledPeptide)`
         display: flex;
         justify-content: center;
         align-items: center;
@@ -101,7 +101,7 @@ const Peptide = memo(
  * index: number,
  * }} props
  */
-const _CodonIndex = ({ className, number, index }) => {
+const UnstyledCodonIndex = ({ className, number, index }) => {
     return (
         <div className={className} data-index={index}>
             {number}
@@ -110,7 +110,7 @@ const _CodonIndex = ({ className, number, index }) => {
 }
 
 const CodonIndex = memo(
-    styled(_CodonIndex)`
+    styled(UnstyledCodonIndex)`
         display: flex;
         justify-content: center;
         align-items: center;
@@ -129,7 +129,7 @@ const CodonIndex = memo(
  * opacity: number,
  * }} props
  */
-const _Codon = props => {
+const UnstyledCodon = props => {
     const { className, index, cursor, selection, letters, colors } = props
     return (
         <div className={className} data-index={index}>
@@ -152,7 +152,7 @@ const _Codon = props => {
 }
 
 const Codon = memo(
-    styled(_Codon)`
+    styled(UnstyledCodon)`
         position: relative;
         display: flex;
         flex-flow: row;
@@ -198,8 +198,8 @@ const Codon = memo(
  * selection: import('../SequenceDataModel').SequenceDataSelectionModel,
  * }} props
  */
-const _SequenceItem = ({ className, item, cursor, selection }) => {
-    const editorHints = useRecoilValue(editorHintState)
+const UnstyledSequenceItem = ({ className, item, cursor, selection }) => {
+    const editorHints = useAtomValue(editorHintState)
 
     const codonColors = useMemo(
         () => ColorUtil.getCodonColors(item.codonLetters),
@@ -256,7 +256,7 @@ const _SequenceItem = ({ className, item, cursor, selection }) => {
 }
 
 const SequenceItem = memo(
-    styled(_SequenceItem)`
+    styled(UnstyledSequenceItem)`
         display: flex;
         flex-flow: column;
         border-radius: .25rem;

@@ -2,24 +2,36 @@
 name = "app"
 version = "0.3.0"
 description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+authors = ["Marco Quinten"]
+license = "MIT"
+repository = "https://github.com/plasmid-designer/plasmid-designer"
 default-run = "app"
 edition = "2021"
-rust-version = "1.57"
+rust-version = "1.85.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.0.0-rc.15", features = [] }
+tauri-build = { version = "2", features = [] }
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.0", features = ["api-all"] }
-parking_lot = "0.12.0"
-plasmid = { git = "https://github.com/SplittyDev/plasmid", branch = "main" }
+tauri = { version = "2", features = [] }
+parking_lot = "0.12"
+plasmid = { git = "https://github.com/plasmid-designer/libplasmid", branch = "main" }
+tauri-plugin-notification = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-process = "2"
+tauri-plugin-os = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-http = "2"
+
+# This needs to be fixed properly at some point..
+# See: https://github.com/ebarnard/rust-plist/issues/151
+deranged = "=0.4.0"
 
 [features]
 # by default Tauri runs in production mode
@@ -28,3 +40,6 @@ default = [ "custom-protocol" ]
 # this feature is used used for production builds where `devPath` points to the filesystem
 # DO NOT remove this
 custom-protocol = [ "tauri/custom-protocol" ]
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-global-shortcut = "2"

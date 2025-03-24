@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useRecoilState } from 'recoil'
+import { useAtom } from 'jotai'
 
 import { editorHintState, editorRendererState } from '../../../state/atoms'
 
@@ -12,8 +12,8 @@ type Props = {
 }
 
 const EditorToolbar = ({ className }: Props) => {
-    const [editorHints, setEditorHints] = useRecoilState(editorHintState)
-    const [renderer, setRenderer] = useRecoilState(editorRendererState)
+    const [editorHints, setEditorHints] = useAtom(editorHintState)
+    const [renderer, setRenderer] = useAtom(editorRendererState)
 
     return (
         <Toolbar className={className}>
@@ -57,7 +57,7 @@ const EditorToolbar = ({ className }: Props) => {
                     </div>
                 </MenuButton>
             </div>
-            <div className="input_container" style={{flexGrow: 1}}></div>
+            <div className="input_container" style={{flexGrow: 1}} />
             { rendererList.length > 1 && (
                 <div className="input_container">
                     <div className="input_wrapper">

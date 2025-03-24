@@ -1,5 +1,5 @@
 import { useMemo, useRef, useEffect, useCallback, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import { Loader } from 'react-feather'
 import styled from 'styled-components'
 
@@ -17,8 +17,8 @@ const Editor = ({ className }: Props) => {
     const editorRef = useRef<HTMLDivElement>(null)
     const [renderCursor, setRenderCursor] = useState(false)
 
-    const rendererName = useRecoilValue(editorRendererState)
-    const activeProjectId = useRecoilValue(activeProjectIdState)
+    const rendererName = useAtomValue(editorRendererState)
+    const activeProjectId = useAtomValue(activeProjectIdState)
 
     const {
         cursor,
